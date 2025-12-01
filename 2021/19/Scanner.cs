@@ -1,11 +1,11 @@
 using System.Numerics;
 using Advent_of_Code.Utility;
 
-namespace Advent_of_Code._1;
+namespace Advent_of_Code._2021._19;
 
 public class Scanner
 {
-    public        List<Vector3> Beacons;
+    public        List<Vector3> Beacons = new();
     private const float         RAD_90 = (float) Math.PI / 2f;
 
     private Dictionary<Quaternion, List<Vector3>> Rotations()

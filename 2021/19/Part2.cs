@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using Advent_of_Code.Utility;
-using Advent_of_Code._1;
 
 namespace Advent_of_Code._2021._19;
 
@@ -20,7 +19,6 @@ public class Part2 : AoCPart
                 }
 
                 scanner         = new Scanner();
-                scanner.Beacons = new();
             }
             else
             {
