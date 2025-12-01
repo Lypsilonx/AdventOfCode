@@ -1,10 +1,11 @@
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Advent_of_Code.Utility;
 
 public abstract class AoCPart
 {
-    public string Input {
+    protected string Input {
         get
         {
             var filePath        = $"../../../{_year}/{_day}/input.txt";
@@ -19,10 +20,8 @@ public abstract class AoCPart
             using var client          = new HttpClient(new HttpClientHandler
             {
                 CookieContainer = cookieContainer
-            })
-            {
-                BaseAddress = baseAddress
-            };
+            });
+            client.BaseAddress = baseAddress;
             cookieContainer.Add(baseAddress, new Cookie("session", File.ReadAllText("../../../Utility/token.txt")));
             var result = client.GetAsync($"{_year}/day/{_day}/input").Result;
             result.EnsureSuccessStatusCode();
@@ -35,8 +34,8 @@ public abstract class AoCPart
             return text;
         }
     }
-    
-    public string[] InputLines(bool removeEmpty = true)
+
+    protected string[] InputLines(bool removeEmpty = true)
     {
         var lines = Input.Split("\n");
         if (removeEmpty)
@@ -47,9 +46,50 @@ public abstract class AoCPart
     }
 
     private int _year => int.Parse(GetType().Namespace!.Split(".")[1][1..]);
-
     private int _day  => int.Parse(GetType().Namespace!.Split(".")[2][1..]);
-    private int _part => int.Parse(GetType().Namespace!.Last().ToString());
+    private int _part =>
+        int.Parse(
+            GetType().Name.Last()
+                     .ToString()
+        );
 
     public abstract object Run();
+    
+    public void Submit(string answer)
+    {
+        var baseAddress     = new Uri("https://adventofcode.com");
+        var cookieContainer = new CookieContainer();
+        using var client          = new HttpClient(new HttpClientHandler
+        {
+            CookieContainer = cookieContainer
+        });
+        client.BaseAddress = baseAddress;
+        cookieContainer.Add(baseAddress, new Cookie("session", File.ReadAllText("../../../Utility/token.txt")));
+        var formContent   = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
+        {
+            new ("level", _part.ToString()),
+            new ("answer", answer)
+        });
+        var result        = client.PostAsync($"{_year}/day/{_day}/answer", formContent).Result;
+    
+        result.EnsureSuccessStatusCode();
+
+        var htmlContent = result.Content.ReadAsStringAsync()
+                                .Result;
+        MatchCollection matches     = Regex.Matches(htmlContent, "<article><p>(.*?)</p></article>");
+
+        var response = matches.First()
+                              .Groups[1].Value;
+        
+        if (response.Contains("solved") || response.Contains("complete"))
+        {
+            File.AppendAllLines("../../../Utility/solved.txt",
+            [
+                $"{_year}/{_day}/{_part}"
+            ]
+            );
+        }
+
+        Console.WriteLine(response);
+    }
 }
