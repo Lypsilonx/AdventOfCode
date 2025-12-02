@@ -13,6 +13,12 @@ public static class Extensions
         );
     }
     
+    public static IEnumerable<string> SplitByLength(this string str, int maxLength) {
+        for (int index = 0; index < str.Length; index += maxLength) {
+            yield return str.Substring(index, Math.Min(maxLength, str.Length - index));
+        }
+    }
+    
     public static Vector3 Round(this Vector3 self)
     {
         return self.Select(x => (float) Math.Round(x));
