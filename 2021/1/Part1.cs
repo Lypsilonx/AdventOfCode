@@ -8,11 +8,9 @@ public class Part1 : AoCPart
     {
         var prev         = float.MaxValue;
         var greaterCount = 0;
-        var lines        = InputLines();
-        for (var index = 0; index < lines.Length; index++)
+        foreach (var line in InputLines())
         {
-            var line = lines[index];
-            var val  = int.Parse(line);
+            var    val  = int.Parse(line);
             if (val > prev)
             {
                 greaterCount++;

@@ -6,7 +6,7 @@ public static class Runner
 {
     private static bool CreateFilesForToday(int pYear, int pDay)
     {
-        var filesCreated   = false;
+        var filesCreated = false;
 
         if (!Directory.Exists($"../../../{pYear}"))
         {
@@ -14,7 +14,7 @@ public static class Runner
             Console.WriteLine($"Creating directory for {pYear}");
             filesCreated = true;
         }
-        
+
         if (!Directory.Exists($"../../../{pYear}/{pDay}"))
         {
             Directory.CreateDirectory($"../../../{pYear}/{pDay}");
@@ -38,11 +38,12 @@ public static class Runner
                           return "";
                       }
                   }
-                  """);
+                  """
+            );
             Console.WriteLine($"Creating Part1 for {pYear}/{pDay}");
             filesCreated = true;
         }
-        
+
         if (!File.Exists($"../../../{pYear}/{pDay}/Part2.cs"))
         {
             File.WriteAllText(
@@ -59,7 +60,8 @@ public static class Runner
                           return "";
                       }
                   }
-                  """);
+                  """
+            );
             Console.WriteLine($"Creating Part2 for {pYear}/{pDay}");
             filesCreated = true;
         }
@@ -76,9 +78,10 @@ public static class Runner
 
         if (pPart == 0)
         {
-            pPart = File.ReadAllText($"../../../{pYear}/{pDay}/Part2.cs").Contains("{\n        return \"\";\n    }")
-                ? 1
-                : 2;
+            pPart = File.ReadAllText($"../../../{pYear}/{pDay}/Part2.cs")
+                        .Contains("{\n        return \"\";\n    }")
+                        ? 1
+                        : 2;
         }
 
         var type = Assembly.Load("Advent of Code, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
@@ -88,23 +91,22 @@ public static class Runner
         {
             throw new ArgumentOutOfRangeException($"Could not find {pYear}/{pDay}/{pPart}");
         }
-     
-        AoCPart partObject = (Activator.CreateInstance(type) as AoCPart)!;
-        
+
+        var partObject = (Activator.CreateInstance(type) as AoCPart)!;
+
         Console.WriteLine($"{pYear}/{pDay}/{pPart}:");
 
-        var output = partObject.Run().ToString();
-        
+        var output = partObject.Run()
+                               .ToString();
+
         Console.WriteLine(output);
 
         var solved = File.ReadAllLines("../../../Utility/solved.txt");
-        if (!pSubmit
-            || string.IsNullOrEmpty(output)
-            || solved.Contains($"{pYear}/{pDay}/{pPart}"))
+        if (!pSubmit || string.IsNullOrEmpty(output) || solved.Contains($"{pYear}/{pDay}/{pPart}"))
         {
             return;
         }
-        
+
         Console.WriteLine("Submit [Y/n]");
         var submitAnswer = Console.ReadLine();
 

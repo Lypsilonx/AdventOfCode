@@ -28,7 +28,7 @@ public class Part1 : AoCPart
                     break;
             }
         }
-        
+
         return position.X * position.Y;
     }
 }

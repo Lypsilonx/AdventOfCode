@@ -10,8 +10,8 @@ public class Part1 : AoCPart
         var leftPointingCount = 0;
         foreach (var line in InputLines())
         {
-            var dir = line.Substring(0, 1);
-            int num = int.Parse(line.Substring(1));
+            var dir = line[..1];
+            var num = int.Parse(line[1..]);
             if (dir == "L")
             {
                 dial = (dial - num) % 100;
@@ -26,6 +26,7 @@ public class Part1 : AoCPart
                 leftPointingCount++;
             }
         }
+
         return leftPointingCount;
     }
 }

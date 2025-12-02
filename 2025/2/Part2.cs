@@ -25,7 +25,7 @@ public class Part2 : AoCPart
         return invalidIds.Sum();
     }
 
-    private bool IsValidId(long id)
+    private static bool IsValidId(long id)
     {
         var idString = id.ToString();
 
@@ -35,9 +35,12 @@ public class Part2 : AoCPart
             {
                 continue;
             }
-        
-            var parts      = idString.SplitByLength(split);
-            if (parts.Distinct().ToList().Count == 1)
+
+            var parts = idString.SplitByLength(split);
+            if (parts.Distinct()
+                     .ToList()
+                     .Count
+                == 1)
             {
                 return false;
             }
