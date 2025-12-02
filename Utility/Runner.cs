@@ -67,11 +67,18 @@ public static class Runner
         return filesCreated;
     }
 
-    public static void Run(int pYear, int pDay, int pPart, bool pSubmit = false)
+    public static void Run(int pYear, int pDay, int pPart = 0, bool pSubmit = false)
     {
         if (CreateFilesForToday(pYear, pDay))
         {
             return;
+        }
+
+        if (pPart == 0)
+        {
+            pPart = File.ReadAllText($"../../../{pYear}/{pDay}/Part2.cs").Contains("{\n        return \"\";\n    }")
+                ? 1
+                : 2;
         }
 
         var type = Assembly.Load("Advent of Code, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")

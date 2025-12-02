@@ -76,10 +76,10 @@ public abstract class AoCPart
 
         var htmlContent = result.Content.ReadAsStringAsync()
                                 .Result;
-        MatchCollection matches     = Regex.Matches(htmlContent, "<article><p>(.*?)</p></article>");
+        MatchCollection matches     = Regex.Matches(htmlContent, "<article>(.*?)</article>");
 
         var response = matches.First()
-                              .Groups[1].Value;
+                              .Groups[1].Value.Replace("<p>", "").Replace("</p>", "");
         
         if (response.Contains("solved") || response.Contains("complete"))
         {
