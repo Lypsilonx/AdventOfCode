@@ -6,14 +6,14 @@ public class Part2 : AoCPart
 {
     public override object Run()
     {
-        List<long> invalidIds = new();
+        List<long> invalidIds = [];
         foreach (var idRange in Input.Split(","))
         {
             var ids      = idRange.Split("-");
             var firstId  = long.Parse(ids[0]);
             var secondId = long.Parse(ids[1]);
 
-            for (long id = firstId; id <= secondId; id++)
+            for (var id = firstId; id <= secondId; id++)
             {
                 if (!IsValidId(id))
                 {
@@ -29,13 +29,13 @@ public class Part2 : AoCPart
     {
         var idString = id.ToString();
 
-        for (int split = 1; split <= idString.Length / 2; split++)
+        for (var split = 1; split <= idString.Length / 2; split++)
         {
             if (idString.Length % split != 0)
             {
                 continue;
             }
-
+        
             var parts      = idString.SplitByLength(split);
             if (parts.Distinct().ToList().Count == 1)
             {

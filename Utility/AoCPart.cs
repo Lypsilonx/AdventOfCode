@@ -81,7 +81,7 @@ public abstract class AoCPart
         var response = matches.First()
                               .Groups[1].Value.Replace("<p>", "").Replace("</p>", "");
         
-        if (response.Contains("solved") || response.Contains("complete"))
+        if (response.Contains("That's the right answer") || response.Contains("complete"))
         {
             File.AppendAllLines("../../../Utility/solved.txt",
             [
