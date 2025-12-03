@@ -1,0 +1,50 @@
+using Advent_of_Code.Utility;
+
+namespace Advent_of_Code._2025._3;
+
+public class Part1 : AoCPart
+{
+    public override object Run()
+    {
+        long joltageSum = 0;
+        foreach (var bank in InputLines())
+        {
+            var batteries = bank.ToList().Select(c => int.Parse(c.ToString())).ToList();
+
+            var max = 0;
+            for (int i = 0; i < batteries.Count; i++)
+            {
+                var num1 = batteries[i];
+                for (int j = 0; j < batteries.Count; j++)
+                {
+                    if (i == j)
+                    {
+                        continue;
+                    }
+
+                    var num2 = batteries[j];
+                    if (i < j)
+                    {
+                        var joltage = num1 * 10 + num2;
+                        if (joltage > max)
+                        {
+                            max = joltage;
+                        }
+                    }
+                    else
+                    {
+                        var joltage = num2 * 10 + num1;
+                        if (joltage > max)
+                        {
+                            max = joltage;
+                        }
+                    }
+                }
+            }
+
+            var bankJoltage = max;
+            joltageSum += bankJoltage;
+        }
+        return joltageSum;
+    }
+}
