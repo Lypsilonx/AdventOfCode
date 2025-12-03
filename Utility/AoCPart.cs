@@ -97,17 +97,19 @@ public abstract class AoCPart
         );
         var result = client.PostAsync($"{_year}/day/{_day}/answer", formContent)
                            .Result;
-
+        
         result.EnsureSuccessStatusCode();
-
+        
         var htmlContent = result.Content.ReadAsStringAsync()
                                 .Result;
-        var matches = Regex.Matches(htmlContent, "<article>(.*?)</article>");
+        htmlContent = Regex.Replace(htmlContent, "<a \n?.*?>(.*?)</a\n?>",       "${1}", RegexOptions.Singleline);
+        htmlContent = Regex.Replace(htmlContent, "<span \n?.*?>(.*?)</span\n?>", "${1}", RegexOptions.Singleline);
+            
+        var matches     = Regex.Matches(htmlContent, "<article><p>(.*?)</p>", RegexOptions.Singleline);
 
         var response = matches.First()
                               .Groups[1]
-                              .Value.Replace("<p>", "")
-                              .Replace("</p>", "");
+                              .Value.Replace("</p><p>", "\n");
 
         if (response.Contains("That's the right answer") || response.Contains("complete"))
         {
