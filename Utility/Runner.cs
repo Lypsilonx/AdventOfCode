@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Advent_of_Code.Utility;
@@ -96,8 +97,11 @@ public static class Runner
 
         Console.WriteLine($"{pYear}/{pDay}/{pPart}:");
 
+        var watch = Stopwatch.StartNew();
         var output = partObject.Run()
                                .ToString();
+        watch.Stop();
+        Console.WriteLine($"({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)");
 
         Console.WriteLine(output);
 
