@@ -41,7 +41,7 @@ public class Part2 : AoCPart
                 canRemove--;
             }
 
-            var bankJoltage = long.Parse(string.Join("", batteries));
+            var bankJoltage = long.Parse(batteries.Join(""));
             joltageSum += bankJoltage;
         }
 

@@ -26,4 +26,9 @@ public static class Extensions
     {
         return Math.Abs(self.X - other.X) + Math.Abs(self.Y - other.Y) + Math.Abs(self.Z - other.Z);
     }
+
+    public static string Join<T>(this List<T> list, string join)
+    {
+        return string.Join(list.ToString(), join);
+    }
 }
