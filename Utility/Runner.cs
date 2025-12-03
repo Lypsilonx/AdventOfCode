@@ -95,14 +95,14 @@ public static class Runner
 
         var partObject = (Activator.CreateInstance(type) as AoCPart)!;
 
-        Console.WriteLine($"{pYear}/{pDay}/{pPart}:");
-
         var watch = Stopwatch.StartNew();
-        var output = partObject.Run()
-                               .ToString();
+        var outputRaw = partObject.Run();
         watch.Stop();
-        Console.WriteLine($"({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)");
+        Console.WriteLine($"{pYear}/{pDay}/{pPart}: "
+                          + $"({(float) (watch.ElapsedTicks - AoCPart.InputWatch.ElapsedTicks) / Stopwatch.Frequency * 1000}ms)");
 
+        var output = outputRaw
+            .ToString();
         Console.WriteLine(output);
 
         var solved = File.ReadAllLines("../../../Utility/solved.txt");

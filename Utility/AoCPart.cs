@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -5,15 +6,27 @@ namespace Advent_of_Code.Utility;
 
 public abstract class AoCPart
 {
+    public static readonly Stopwatch InputWatch = new();
     protected string Input
     {
         get
         {
+            var onlyInput = false;
+            if (!InputWatch.IsRunning)
+            {
+                onlyInput = true;
+                InputWatch.Start();
+            }
             var filePath = $"../../../{_year}/{_day}/input.txt";
 
             if (File.Exists(filePath))
             {
-                return File.ReadAllText(filePath);
+                var fileContents = File.ReadAllText(filePath);
+                if (onlyInput)
+                {
+                    InputWatch.Stop();
+                }
+                return fileContents;
             }
 
             var       baseAddress     = new Uri("https://adventofcode.com");
@@ -29,7 +42,10 @@ public abstract class AoCPart
                              .Result;
 
             File.WriteAllText(filePath, text);
-
+            if (onlyInput)
+            {
+                InputWatch.Stop();
+            }
             return text;
         }
     }
@@ -55,12 +71,14 @@ public abstract class AoCPart
 
     protected string[] InputLines(bool removeEmpty = true)
     {
+        InputWatch.Start();
         var lines = Input.Split("\n");
         if (removeEmpty)
         {
             lines = lines.Where(l => l != "")
                          .ToArray();
         }
+        InputWatch.Stop();
 
         return lines;
     }
