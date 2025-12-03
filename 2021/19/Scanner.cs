@@ -7,14 +7,11 @@ public class Scanner
 {
     private const float         RAD_90  = (float) Math.PI / 2f;
     public        List<Vector3> Beacons = [];
-
-    private Dictionary<Quaternion, List<Vector3>> Rotations()
-    {
-        List<Quaternion> rotationQuaternions = [
-            Quaternion.CreateFromYawPitchRoll(0,  0,  0),
-            Quaternion.CreateFromYawPitchRoll(0,  0,  RAD_90),
-            Quaternion.CreateFromYawPitchRoll(0,  0,  -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(0,  0,  2*RAD_90),
+    private static readonly List<Quaternion> _rotationQuaternions = [
+            Quaternion.CreateFromYawPitchRoll(0, 0, 0),
+            Quaternion.CreateFromYawPitchRoll(0, 0, RAD_90),
+            Quaternion.CreateFromYawPitchRoll(0, 0, -RAD_90),
+            Quaternion.CreateFromYawPitchRoll(0, 0, 2*RAD_90),
             
             Quaternion.CreateFromYawPitchRoll(0, RAD_90, 0),
             Quaternion.CreateFromYawPitchRoll(0, RAD_90, RAD_90),
@@ -26,76 +23,26 @@ public class Scanner
             Quaternion.CreateFromYawPitchRoll(0, -RAD_90, -RAD_90),
             Quaternion.CreateFromYawPitchRoll(0, -RAD_90, 2*RAD_90),
             
-            Quaternion.CreateFromYawPitchRoll(0,     2*RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(0,     2*RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(0,     2*RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(0,     2*RAD_90, 2*RAD_90),
+            Quaternion.CreateFromYawPitchRoll(0, 2*RAD_90, 0),
+            Quaternion.CreateFromYawPitchRoll(0, 2*RAD_90, RAD_90),
+            Quaternion.CreateFromYawPitchRoll(0, 2*RAD_90, -RAD_90),
+            Quaternion.CreateFromYawPitchRoll(0, 2*RAD_90, 2*RAD_90),
             
-            Quaternion.CreateFromYawPitchRoll(RAD_90, 0,   0),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, 0,   RAD_90),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, 0,   -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, 0,   2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(RAD_90, RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, RAD_90, 2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(RAD_90, -RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, -RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, -RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, -RAD_90, 2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(RAD_90, 2*RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, 2*RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, 2*RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(RAD_90, 2*RAD_90, 2*RAD_90),
+            Quaternion.CreateFromYawPitchRoll(RAD_90, 0, 0),
+            Quaternion.CreateFromYawPitchRoll(RAD_90, 0, RAD_90),
+            Quaternion.CreateFromYawPitchRoll(RAD_90, 0, -RAD_90),
+            Quaternion.CreateFromYawPitchRoll(RAD_90, 0, 2*RAD_90),
             
             Quaternion.CreateFromYawPitchRoll(-RAD_90, 0, 0),
             Quaternion.CreateFromYawPitchRoll(-RAD_90, 0, RAD_90),
             Quaternion.CreateFromYawPitchRoll(-RAD_90, 0, -RAD_90),
             Quaternion.CreateFromYawPitchRoll(-RAD_90, 0, 2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, RAD_90, 2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, -RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, -RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, -RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, -RAD_90, 2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, 2*RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, 2*RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, 2*RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(-RAD_90, 2*RAD_90, 2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, 0, 0),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, 0, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, 0, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, 0, 2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, RAD_90, 2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, -RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, -RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, -RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, -RAD_90, 2*RAD_90),
-            
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, 2*RAD_90, 0),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, 2*RAD_90, RAD_90),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, 2*RAD_90, -RAD_90),
-            Quaternion.CreateFromYawPitchRoll(2*RAD_90, 2*RAD_90, 2*RAD_90)
         ];
-        rotationQuaternions = rotationQuaternions.Distinct()
-                                                 .ToList();
 
+    private Dictionary<Quaternion, List<Vector3>> Rotations()
+    {
         Dictionary<Quaternion, List<Vector3>> rotations = new();
-        foreach (var quaternion in rotationQuaternions)
+        foreach (var quaternion in _rotationQuaternions)
         {
             var rotatedBeacons = Beacons.Select(v => Vector3.Transform(v, quaternion)
                                                             .Round()
