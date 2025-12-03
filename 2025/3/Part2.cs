@@ -9,16 +9,18 @@ public class Part2 : AoCPart
         long joltageSum = 0;
         foreach (var bank in InputLines())
         {
-            var batteries = bank.ToList().Select(c => int.Parse(c.ToString())).ToList();
+            var batteries = bank.ToList()
+                                .Select(c => int.Parse(c.ToString()))
+                                .ToList();
 
             var canRemove = batteries.Count - 12;
 
             var leave = false;
             while (canRemove > 0 && !leave)
             {
-                for (int i = 1; i < batteries.Count; i++)
+                for (var i = 1; i < batteries.Count; i++)
                 {
-                    if (canRemove > 0 && batteries[i] > batteries[i - 1])
+                    if (batteries[i] > batteries[i - 1])
                     {
                         batteries.RemoveAt(i - 1);
                         canRemove--;
@@ -42,6 +44,7 @@ public class Part2 : AoCPart
             var bankJoltage = long.Parse(string.Join("", batteries));
             joltageSum += bankJoltage;
         }
+
         return joltageSum;
     }
 }

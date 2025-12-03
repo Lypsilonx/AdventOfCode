@@ -34,7 +34,7 @@ public class Part1 : AoCPart
         }
 
         var firstPart  = idString[..(idString.Length / 2)];
-        var secondPart = idString.Substring(idString.Length    / 2, idString.Length / 2);
+        var secondPart = idString.Substring(idString.Length / 2, idString.Length / 2);
         return firstPart != secondPart;
     }
 }

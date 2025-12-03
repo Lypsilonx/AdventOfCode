@@ -10,7 +10,7 @@ public class Part1 : AoCPart
         var greaterCount = 0;
         foreach (var line in InputLines())
         {
-            var    val  = int.Parse(line);
+            var val = int.Parse(line);
             if (val > prev)
             {
                 greaterCount++;

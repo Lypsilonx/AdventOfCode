@@ -9,13 +9,15 @@ public class Part1 : AoCPart
         long joltageSum = 0;
         foreach (var bank in InputLines())
         {
-            var batteries = bank.ToList().Select(c => int.Parse(c.ToString())).ToList();
+            var batteries = bank.ToList()
+                                .Select(c => int.Parse(c.ToString()))
+                                .ToList();
 
             var max = 0;
-            for (int i = 0; i < batteries.Count; i++)
+            for (var i = 0; i < batteries.Count; i++)
             {
                 var num1 = batteries[i];
-                for (int j = 0; j < batteries.Count; j++)
+                for (var j = 0; j < batteries.Count; j++)
                 {
                     if (i == j)
                     {
@@ -45,6 +47,7 @@ public class Part1 : AoCPart
             var bankJoltage = max;
             joltageSum += bankJoltage;
         }
+
         return joltageSum;
     }
 }
