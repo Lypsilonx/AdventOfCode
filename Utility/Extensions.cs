@@ -29,6 +29,6 @@ public static class Extensions
 
     public static string Join<T>(this List<T> list, string join)
     {
-        return string.Join(list.ToString(), join);
+        return string.Join(join, list);
     }
 }
