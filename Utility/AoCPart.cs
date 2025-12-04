@@ -6,7 +6,7 @@ namespace Advent_of_Code.Utility;
 
 public abstract class AoCPart
 {
-    public static readonly Stopwatch InputWatch = new();
+    public static readonly  Stopwatch InputWatch        = new();
     protected string Input
     {
         get
@@ -17,7 +17,7 @@ public abstract class AoCPart
                 onlyInput = true;
                 InputWatch.Start();
             }
-            var filePath = $"../../../{_year}/{_day}/input.txt";
+            var filePath = $"{Runner.ProjectDirectory}/{_year}/{_day}/input.txt";
 
             if (File.Exists(filePath))
             {
@@ -33,7 +33,7 @@ public abstract class AoCPart
             var       cookieContainer = new CookieContainer();
             using var client          = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
             client.BaseAddress = baseAddress;
-            cookieContainer.Add(baseAddress, new Cookie("session", File.ReadAllText("../../../Utility/token.txt")));
+            cookieContainer.Add(baseAddress, new Cookie("session", File.ReadAllText($"{Runner.ProjectDirectory}/Utility/token.txt")));
             var result = client.GetAsync($"{_year}/day/{_day}/input")
                                .Result;
             result.EnsureSuccessStatusCode();
@@ -91,7 +91,7 @@ public abstract class AoCPart
         var       cookieContainer = new CookieContainer();
         using var client          = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
         client.BaseAddress = baseAddress;
-        cookieContainer.Add(baseAddress, new Cookie("session", File.ReadAllText("../../../Utility/token.txt")));
+        cookieContainer.Add(baseAddress, new Cookie("session", File.ReadAllText($"{Runner.ProjectDirectory}/Utility/token.txt")));
         var formContent = new FormUrlEncodedContent(
             new List<KeyValuePair<string, string>> { new("level", _part.ToString()), new("answer", answer) }
         );
@@ -113,7 +113,7 @@ public abstract class AoCPart
 
         if (response.Contains("That's the right answer") || response.Contains("complete"))
         {
-            File.AppendAllLines("../../../Utility/solved.txt", [$"{_year}/{_day}/{_part}"]);
+            File.AppendAllLines($"{Runner.ProjectDirectory}/Utility/solved.txt", [$"{_year}/{_day}/{_part}"]);
         }
 
         Console.WriteLine(response);

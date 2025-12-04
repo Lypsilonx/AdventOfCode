@@ -1,32 +1,49 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Advent_of_Code.Utility;
 
 public static class Runner
 {
+    [field: AllowNull, MaybeNull]
+    public static  string  ProjectDirectory
+    {
+        get
+        {
+            field ??= Environment.CurrentDirectory.Contains("/bin")
+                          ? Directory.GetParent(Environment.CurrentDirectory)
+                                     ?.Parent?.Parent?.FullName
+                            ?? string.Empty
+                          : Environment.CurrentDirectory;
+            return field;
+        }
+    }
+
+    
+
     private static bool CreateFilesForToday(int pYear, int pDay)
     {
         var filesCreated = false;
 
-        if (!Directory.Exists($"../../../{pYear}"))
+        if (!Directory.Exists($"{ProjectDirectory}/{pYear}"))
         {
-            Directory.CreateDirectory($"../../../{pYear}");
+            Directory.CreateDirectory($"{ProjectDirectory}/{pYear}");
             Console.WriteLine($"Creating directory for {pYear}");
             filesCreated = true;
         }
 
-        if (!Directory.Exists($"../../../{pYear}/{pDay}"))
+        if (!Directory.Exists($"{ProjectDirectory}/{pYear}/{pDay}"))
         {
-            Directory.CreateDirectory($"../../../{pYear}/{pDay}");
+            Directory.CreateDirectory($"{ProjectDirectory}/{pYear}/{pDay}");
             Console.WriteLine($"Creating directory for {pYear}/{pDay}");
             filesCreated = true;
         }
 
-        if (!File.Exists($"../../../{pYear}/{pDay}/Part1.cs"))
+        if (!File.Exists($"{ProjectDirectory}/{pYear}/{pDay}/Part1.cs"))
         {
             File.WriteAllText(
-                $"../../../{pYear}/{pDay}/Part1.cs",
+                $"{ProjectDirectory}/{pYear}/{pDay}/Part1.cs",
                 $$"""
                   using Advent_of_Code.Utility;
 
@@ -45,10 +62,10 @@ public static class Runner
             filesCreated = true;
         }
 
-        if (!File.Exists($"../../../{pYear}/{pDay}/Part2.cs"))
+        if (!File.Exists($"{ProjectDirectory}/{pYear}/{pDay}/Part2.cs"))
         {
             File.WriteAllText(
-                $"../../../{pYear}/{pDay}/Part2.cs",
+                $"{ProjectDirectory}/{pYear}/{pDay}/Part2.cs",
                 $$"""
                   using Advent_of_Code.Utility;
 
@@ -79,7 +96,7 @@ public static class Runner
 
         if (pPart == 0)
         {
-            pPart = File.ReadAllText($"../../../{pYear}/{pDay}/Part2.cs")
+            pPart = File.ReadAllText($"{ProjectDirectory}/{pYear}/{pDay}/Part2.cs")
                         .Contains("{\n        return \"\";\n    }")
                         ? 1
                         : 2;
@@ -95,17 +112,18 @@ public static class Runner
 
         var partObject = (Activator.CreateInstance(type) as AoCPart)!;
 
-        var watch = Stopwatch.StartNew();
+        var watch     = Stopwatch.StartNew();
         var outputRaw = partObject.Run();
         watch.Stop();
-        Console.WriteLine($"{pYear}/{pDay}/{pPart}: "
-                          + $"({(float) (watch.ElapsedTicks - AoCPart.InputWatch.ElapsedTicks) / Stopwatch.Frequency * 1000}ms)");
+        Console.WriteLine(
+            $"{pYear}/{pDay}/{pPart}: "
+            + $"({(float) (watch.ElapsedTicks - AoCPart.InputWatch.ElapsedTicks) / Stopwatch.Frequency * 1000}ms)"
+        );
 
-        var output = outputRaw
-            .ToString();
+        var output = outputRaw.ToString();
         Console.WriteLine(output);
 
-        var solved = File.ReadAllLines("../../../Utility/solved.txt");
+        var solved = File.ReadAllLines($"{ProjectDirectory}/Utility/solved.txt");
         if (!pSubmit || string.IsNullOrEmpty(output) || solved.Contains($"{pYear}/{pDay}/{pPart}"))
         {
             return;
