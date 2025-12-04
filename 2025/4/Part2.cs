@@ -7,8 +7,9 @@ public class Part2 : AoCPart
 {
     public override object Run()
     {
-        List<Vector2> grid  = [];
-        var           lines = InputLines();
+        List<Vector2>    grid  = [];
+        HashSet<Vector2> hash  = [];
+        var              lines = InputLines();
         for (var y = 0; y < lines.Length; y++)
         {
             var line = lines[y];
@@ -16,7 +17,9 @@ public class Part2 : AoCPart
             {
                 if (line[x] == '@')
                 {
-                    grid.Add(new Vector2(x, y));
+                    var vector = new Vector2(x, y);
+                    grid.Add(vector);
+                    hash.Add(vector);
                 }
             }
         }
@@ -25,7 +28,6 @@ public class Part2 : AoCPart
         while (true)
         {
             List<Vector2> removable = [];
-            var           hash      = new HashSet<Vector2>(grid);
             foreach (var roll in grid)
             {
                 var surrounding = 0;
@@ -58,8 +60,10 @@ public class Part2 : AoCPart
 
             foreach (var remove in removable)
             {
-                grid.Remove(remove);
+                hash.Remove(remove);
             }
+
+            grid = hash.ToList();
         }
 
         return removed;
