@@ -139,7 +139,7 @@ public static class Runner
         watch.Stop();
         Console.WriteLine(
             $"{pYear}/{pDay}/{pPart}: "
-            + $"({(float) (watch.ElapsedTicks - AoCPart.InputWatch.ElapsedTicks) / Stopwatch.Frequency * 1000}ms)"
+            + $"({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)"
         );
 
         var output = outputRaw.ToString();

@@ -6,20 +6,12 @@ namespace Advent_of_Code.Utility;
 
 public abstract class AoCPart
 {
-    public static readonly Stopwatch InputWatch = new();
     public static          bool      Testing    = false;
 
     protected string Input
     {
         get
         {
-            var onlyInput = false;
-            if (!InputWatch.IsRunning)
-            {
-                onlyInput = true;
-                InputWatch.Start();
-            }
-
             string text;
             if (Testing)
             {
@@ -32,10 +24,6 @@ public abstract class AoCPart
                 if (File.Exists(filePath))
                 {
                     var fileContents = File.ReadAllText(filePath);
-                    if (onlyInput)
-                    {
-                        InputWatch.Stop();
-                    }
 
                     return fileContents;
                 }
@@ -56,11 +44,6 @@ public abstract class AoCPart
                                  .Result;
                 
                 File.WriteAllText(filePath, text);
-            }
-
-            if (onlyInput)
-            {
-                InputWatch.Stop();
             }
 
             return text;
@@ -88,15 +71,12 @@ public abstract class AoCPart
 
     protected string[] InputLines(bool removeEmpty = true)
     {
-        InputWatch.Start();
         var lines = Input.Split("\n");
         if (removeEmpty)
         {
             lines = lines.Where(l => l != "")
                          .ToArray();
         }
-
-        InputWatch.Stop();
 
         return lines;
     }
