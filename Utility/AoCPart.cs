@@ -7,6 +7,7 @@ namespace Advent_of_Code.Utility;
 public abstract class AoCPart
 {
     public static readonly Stopwatch InputWatch = new();
+    public static          bool      Testing    = false;
 
     protected string Input
     {
@@ -19,35 +20,44 @@ public abstract class AoCPart
                 InputWatch.Start();
             }
 
-            var filePath = $"{Runner.ProjectDirectory}/{_year}/{_day}/input.txt";
-
-            if (File.Exists(filePath))
+            string text;
+            if (Testing)
             {
-                var fileContents = File.ReadAllText(filePath);
-                if (onlyInput)
+                text = TestInput;
+            }
+            else
+            {
+                var filePath = $"{Runner.ProjectDirectory}/{_year}/{_day}/input.txt";
+
+                if (File.Exists(filePath))
                 {
-                    InputWatch.Stop();
+                    var fileContents = File.ReadAllText(filePath);
+                    if (onlyInput)
+                    {
+                        InputWatch.Stop();
+                    }
+
+                    return fileContents;
                 }
 
-                return fileContents;
+                var       baseAddress     = new Uri("https://adventofcode.com");
+                var       cookieContainer = new CookieContainer();
+                using var client          = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
+                client.BaseAddress = baseAddress;
+                cookieContainer.Add(
+                    baseAddress,
+                    new Cookie("session", File.ReadAllText($"{Runner.ProjectDirectory}/Utility/token.txt"))
+                );
+                var result = client.GetAsync($"{_year}/day/{_day}/input")
+                                   .Result;
+                result.EnsureSuccessStatusCode();
+
+                text = result.Content.ReadAsStringAsync()
+                                 .Result;
+                
+                File.WriteAllText(filePath, text);
             }
 
-            var       baseAddress     = new Uri("https://adventofcode.com");
-            var       cookieContainer = new CookieContainer();
-            using var client          = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
-            client.BaseAddress = baseAddress;
-            cookieContainer.Add(
-                baseAddress,
-                new Cookie("session", File.ReadAllText($"{Runner.ProjectDirectory}/Utility/token.txt"))
-            );
-            var result = client.GetAsync($"{_year}/day/{_day}/input")
-                               .Result;
-            result.EnsureSuccessStatusCode();
-
-            var text = result.Content.ReadAsStringAsync()
-                             .Result;
-
-            File.WriteAllText(filePath, text);
             if (onlyInput)
             {
                 InputWatch.Stop();
@@ -92,6 +102,9 @@ public abstract class AoCPart
     }
 
     public abstract object Run();
+
+    public virtual string TestInput    => "";
+    public virtual string TestSolution => "";
 
     public void Submit(string answer)
     {

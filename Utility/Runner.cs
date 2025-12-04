@@ -43,19 +43,22 @@ public static class Runner
         {
             File.WriteAllText(
                 $"{ProjectDirectory}/{pYear}/{pDay}/Part1.cs",
-                $$"""
-                  using Advent_of_Code.Utility;
+                $$$"""
+                   using Advent_of_Code.Utility;
 
-                  namespace Advent_of_Code._{{pYear}}._{{pDay}};
+                   namespace Advent_of_Code._{{{pYear}}}._{{{pDay}}};
 
-                  public class Part1 : {{nameof(AoCPart)}}
-                  {
-                      public override object Run()
-                      {
-                          return "";
-                      }
-                  }
-                  """
+                   public class Part1 : {{{nameof(AoCPart)}}}
+                   {
+                       public override string TestInput    => "";
+                       public override string TestSolution => "";
+                       
+                       public override object Run()
+                       {
+                           return "";
+                       }
+                   }
+                   """
             );
             Console.WriteLine($"Creating Part1 for {pYear}/{pDay}");
             filesCreated = true;
@@ -72,6 +75,9 @@ public static class Runner
 
                   public class Part2 : {{nameof(AoCPart)}}
                   {
+                      public override string TestInput    => "";
+                      public override string TestSolution => "";
+                      
                       public override object Run()
                       {
                           return "";
@@ -110,6 +116,23 @@ public static class Runner
         }
 
         var partObject = (Activator.CreateInstance(type) as AoCPart)!;
+
+        if (partObject.TestInput != "")
+        {
+            AoCPart.Testing = true;
+            var testOutput = partObject.Run().ToString();
+            AoCPart.Testing = false;
+
+            if (testOutput != partObject.TestSolution)
+            {
+                Console.WriteLine($"Test failed. Got \"{testOutput}\", expected \"{partObject.TestSolution}\"");
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Test passed.");
+            }
+        }
 
         var watch     = Stopwatch.StartNew();
         var outputRaw = partObject.Run();
