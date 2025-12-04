@@ -31,4 +31,16 @@ public static class Extensions
     {
         return string.Join(join, list);
     }
+    
+    public static int ToInt(this List<bool> bits)
+    {
+        var num = 0;
+        
+        for (var i = 0; i < bits.Count; i++)
+        {
+            num += (bits[i] ? 1 : 0) << bits.Count - i - 1;
+        }
+
+        return num;
+    }
 }
