@@ -6,8 +6,9 @@ namespace Advent_of_Code.Utility;
 
 public static class Runner
 {
-    [field: AllowNull, MaybeNull]
-    public static  string  ProjectDirectory
+    [field: AllowNull]
+    [field: MaybeNull]
+    public static string ProjectDirectory
     {
         get
         {

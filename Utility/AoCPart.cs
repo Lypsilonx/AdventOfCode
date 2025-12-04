@@ -6,7 +6,8 @@ namespace Advent_of_Code.Utility;
 
 public abstract class AoCPart
 {
-    public static readonly  Stopwatch InputWatch        = new();
+    public static readonly Stopwatch InputWatch = new();
+
     protected string Input
     {
         get
@@ -17,6 +18,7 @@ public abstract class AoCPart
                 onlyInput = true;
                 InputWatch.Start();
             }
+
             var filePath = $"{Runner.ProjectDirectory}/{_year}/{_day}/input.txt";
 
             if (File.Exists(filePath))
@@ -26,6 +28,7 @@ public abstract class AoCPart
                 {
                     InputWatch.Stop();
                 }
+
                 return fileContents;
             }
 
@@ -33,7 +36,10 @@ public abstract class AoCPart
             var       cookieContainer = new CookieContainer();
             using var client          = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
             client.BaseAddress = baseAddress;
-            cookieContainer.Add(baseAddress, new Cookie("session", File.ReadAllText($"{Runner.ProjectDirectory}/Utility/token.txt")));
+            cookieContainer.Add(
+                baseAddress,
+                new Cookie("session", File.ReadAllText($"{Runner.ProjectDirectory}/Utility/token.txt"))
+            );
             var result = client.GetAsync($"{_year}/day/{_day}/input")
                                .Result;
             result.EnsureSuccessStatusCode();
@@ -46,6 +52,7 @@ public abstract class AoCPart
             {
                 InputWatch.Stop();
             }
+
             return text;
         }
     }
@@ -78,6 +85,7 @@ public abstract class AoCPart
             lines = lines.Where(l => l != "")
                          .ToArray();
         }
+
         InputWatch.Stop();
 
         return lines;
@@ -91,21 +99,24 @@ public abstract class AoCPart
         var       cookieContainer = new CookieContainer();
         using var client          = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
         client.BaseAddress = baseAddress;
-        cookieContainer.Add(baseAddress, new Cookie("session", File.ReadAllText($"{Runner.ProjectDirectory}/Utility/token.txt")));
+        cookieContainer.Add(
+            baseAddress,
+            new Cookie("session", File.ReadAllText($"{Runner.ProjectDirectory}/Utility/token.txt"))
+        );
         var formContent = new FormUrlEncodedContent(
             new List<KeyValuePair<string, string>> { new("level", _part.ToString()), new("answer", answer) }
         );
         var result = client.PostAsync($"{_year}/day/{_day}/answer", formContent)
                            .Result;
-        
+
         result.EnsureSuccessStatusCode();
-        
+
         var htmlContent = result.Content.ReadAsStringAsync()
                                 .Result;
         htmlContent = Regex.Replace(htmlContent, "<a \n?.*?>(.*?)</a\n?>",       "${1}", RegexOptions.Singleline);
         htmlContent = Regex.Replace(htmlContent, "<span \n?.*?>(.*?)</span\n?>", "${1}", RegexOptions.Singleline);
-            
-        var matches     = Regex.Matches(htmlContent, "<article><p>(.*?)</p>", RegexOptions.Singleline);
+
+        var matches = Regex.Matches(htmlContent, "<article><p>(.*?)</p>", RegexOptions.Singleline);
 
         var response = matches.First()
                               .Groups[1]
