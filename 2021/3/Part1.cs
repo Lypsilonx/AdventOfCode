@@ -7,7 +7,7 @@ public class Part1 : AoCPart
     public override object Run()
     {
         var   inputLines = InputLines();
-        int[] bits       = new int[inputLines[0].Length];
+        var bits       = new int[inputLines[0].Length];
 
         foreach (var line in inputLines)
         {

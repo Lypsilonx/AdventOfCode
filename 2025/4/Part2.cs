@@ -12,7 +12,7 @@ public class Part2 : AoCPart
         for (var y = 0; y < lines.Length; y++)
         {
             var line = lines[y];
-            for (int x = 0; x < line.Length; x++)
+            for (var x = 0; x < line.Length; x++)
             {
                 if (line[x] == '@')
                 {
@@ -25,18 +25,19 @@ public class Part2 : AoCPart
         while (true)
         {
             List<Vector2> removable = [];
+            var           hash      = new HashSet<Vector2>(grid);
             foreach (var roll in grid)
             {
                 var surrounding = 0;
-                for (int xd = -1; xd < 2; xd++)
+                for (var xd = -1; xd < 2; xd++)
                 {
-                    for (int yd = -1; yd < 2; yd++)
+                    for (var yd = -1; yd < 2; yd++)
                     {
                         if (xd == 0 && yd == 0)
                         {
                             continue;
                         }
-                        if (grid.Contains(new Vector2(roll.X + xd, roll.Y + yd)))
+                        if (hash.Contains(new Vector2(roll.X + xd, roll.Y + yd)))
                         {
                             surrounding++;
                         }
