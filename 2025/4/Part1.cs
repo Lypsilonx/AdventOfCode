@@ -34,12 +34,14 @@ public class Part1 : AoCPart
                     {
                         continue;
                     }
+
                     if (hash.Contains(new Vector2(roll.X + xd, roll.Y + yd)))
                     {
                         surrounding++;
                     }
                 }
             }
+
             if (surrounding < 4)
             {
                 accessible++;

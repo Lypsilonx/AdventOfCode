@@ -30,6 +30,6 @@ public class Part2 : AoCPart
             }
         }
 
-        return (long)position.X * (long)position.Y;
+        return (long) position.X * (long) position.Y;
     }
 }

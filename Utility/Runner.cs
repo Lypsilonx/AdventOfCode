@@ -20,8 +20,6 @@ public static class Runner
         }
     }
 
-    
-
     private static bool CreateFilesForToday(int pYear, int pDay)
     {
         var filesCreated = false;
