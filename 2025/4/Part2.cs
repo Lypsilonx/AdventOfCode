@@ -15,12 +15,14 @@ public class Part2 : AoCPart
             var line = lines[y];
             for (var x = 0; x < line.Length; x++)
             {
-                if (line[x] == '@')
+                if (line[x] != '@')
                 {
-                    var vector = new Vector2(x, y);
-                    grid.Add(vector);
-                    hash.Add(vector);
+                    continue;
                 }
+
+                var vector = new Vector2(x, y);
+                grid.Add(vector);
+                hash.Add(vector);
             }
         }
 
