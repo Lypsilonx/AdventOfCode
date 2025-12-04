@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -6,7 +5,7 @@ namespace Advent_of_Code.Utility;
 
 public abstract class AoCPart
 {
-    public static          bool      Testing    = false;
+    public static bool Testing = false;
 
     protected string Input
     {
@@ -41,8 +40,8 @@ public abstract class AoCPart
                 result.EnsureSuccessStatusCode();
 
                 text = result.Content.ReadAsStringAsync()
-                                 .Result;
-                
+                             .Result;
+
                 File.WriteAllText(filePath, text);
             }
 
@@ -69,6 +68,9 @@ public abstract class AoCPart
                 .ToString()
         );
 
+    public virtual string TestInput    => "";
+    public virtual string TestSolution => "";
+
     protected string[] InputLines(bool removeEmpty = true)
     {
         var lines = Input.Split("\n");
@@ -82,9 +84,6 @@ public abstract class AoCPart
     }
 
     public abstract object Run();
-
-    public virtual string TestInput    => "";
-    public virtual string TestSolution => "";
 
     public void Submit(string answer)
     {

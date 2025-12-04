@@ -120,7 +120,8 @@ public static class Runner
         if (partObject.TestInput != "")
         {
             AoCPart.Testing = true;
-            var testOutput = partObject.Run().ToString();
+            var testOutput = partObject.Run()
+                                       .ToString();
             AoCPart.Testing = false;
 
             if (testOutput != partObject.TestSolution)
@@ -128,18 +129,15 @@ public static class Runner
                 Console.WriteLine($"Test failed. Got \"{testOutput}\", expected \"{partObject.TestSolution}\"");
                 return;
             }
-            else
-            {
-                Console.WriteLine("Test passed.");
-            }
+
+            Console.WriteLine("Test passed.");
         }
 
         var watch     = Stopwatch.StartNew();
         var outputRaw = partObject.Run();
         watch.Stop();
         Console.WriteLine(
-            $"{pYear}/{pDay}/{pPart}: "
-            + $"({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)"
+            $"{pYear}/{pDay}/{pPart}: ({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)"
         );
 
         var output = outputRaw.ToString();
