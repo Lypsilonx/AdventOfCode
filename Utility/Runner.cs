@@ -12,7 +12,7 @@ public static class Runner
     {
         get
         {
-            field ??= Environment.CurrentDirectory.Split("/Advent of Code")[0] + "/Advent of Code";
+            field ??= AppDomain.CurrentDomain.BaseDirectory.Split("/Advent of Code")[0] + "/Advent of Code";
             return field;
         }
     }
