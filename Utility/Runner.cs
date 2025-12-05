@@ -136,9 +136,7 @@ public static class Runner
         var watch     = Stopwatch.StartNew();
         var outputRaw = partObject.Run();
         watch.Stop();
-        Console.WriteLine(
-            $"{pYear}/{pDay}/{pPart}: ({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)"
-        );
+        Console.WriteLine($"{pYear}/{pDay}/{pPart}: ({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)");
 
         var output = outputRaw.ToString();
         Console.WriteLine(output);

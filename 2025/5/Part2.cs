@@ -6,7 +6,7 @@ public class Part2 : AoCPart
 {
     public override string TestInput    => "11-11\n11-13\n13-15\n11-11\n5-11\n10-11";
     public override string TestSolution => "11";
-    
+
     public override object Run()
     {
         long               fresh    = 0;
@@ -24,13 +24,15 @@ public class Part2 : AoCPart
 
             while (freshIds.Any(x => x.Item1 <= start && x.Item2 >= start))
             {
-                var startId = freshIds.First(x => x.Item1 <= start && x.Item2 >= start).Item2;
+                var startId = freshIds.First(x => x.Item1 <= start && x.Item2 >= start)
+                                      .Item2;
                 start = startId + 1;
             }
-            
+
             while (freshIds.Any(x => x.Item1 <= until && x.Item2 >= until))
             {
-                var untilId = freshIds.First(x => x.Item1 <= until && x.Item2 >= until).Item1;
+                var untilId = freshIds.First(x => x.Item1 <= until && x.Item2 >= until)
+                                      .Item1;
                 until = untilId - 1;
             }
 
@@ -38,7 +40,7 @@ public class Part2 : AoCPart
             {
                 continue;
             }
-            
+
             while (freshIds.Any(x => x.Item1 >= start && x.Item2 <= until))
             {
                 var skipped = freshIds.First(x => x.Item1 >= start && x.Item2 <= until);
@@ -46,12 +48,13 @@ public class Part2 : AoCPart
                 var sub = skipped.Item2 + 1 - skipped.Item1;
                 fresh -= sub;
             }
-            
+
             freshIds.Add((start, until));
-            
+
             var add = until - start + 1;
             fresh += add;
         }
+
         return fresh;
     }
 }

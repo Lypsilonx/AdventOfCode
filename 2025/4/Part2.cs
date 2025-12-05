@@ -24,13 +24,13 @@ public class Part2 : AoCPart
                 {
                     continue;
                 }
-    
+
                 var vector = new Vector2(x, y);
                 grid.Add(vector);
                 hash.Add(vector);
             }
         }
-    
+
         var removed = 0;
         while (true)
         {
@@ -46,53 +46,53 @@ public class Part2 : AoCPart
                         {
                             continue;
                         }
-    
+
                         if (hash.Contains(new Vector2(roll.X + xd, roll.Y + yd)))
                         {
                             surrounding++;
                         }
                     }
                 }
-    
+
                 if (surrounding < 4)
                 {
                     removable.Add(roll);
                 }
             }
-    
+
             if (removable.Count == 0)
             {
                 break;
             }
-    
+
             removed += removable.Count;
-    
+
             foreach (var remove in removable)
             {
                 hash.Remove(remove);
             }
-    
+
             grid = hash.ToList();
         }
-    
+
         return removed;
     }
 
     // private static int _sizeX;
     // private static int _sizeY;
-    //
+    // 
     // public override string TestInput =>
     //     "..@@.@@@@.\n@@@.@.@.@@\n@@@@@.@.@@\n@.@@@@..@.\n@@.@@@@.@@\n.@@@@@@@.@\n.@.@.@.@@@\n@.@@@.@@@@\n.@@@@@@@@.\n@.@.@@@.@.";
-    //
+    // 
     // public override string TestSolution => "43";
-    //
+    // 
     // public override object Run()
     // {
     //     var lines = InputLines();
     //     _sizeX = lines.Length;
     //     _sizeY = lines[0].Length;
     //     var grid = new bool[_sizeX, _sizeY];
-    //
+    // 
     //     var x = 0;
     //     foreach (var line in lines)
     //     {
@@ -102,10 +102,10 @@ public class Part2 : AoCPart
     //             grid[x, y] = c == '@';
     //             y++;
     //         }
-    //
+    // 
     //         x++;
     //     }
-    //
+    // 
     //     var  removed = 0;
     //     bool changed;
     //     do
@@ -119,44 +119,44 @@ public class Part2 : AoCPart
     //                 {
     //                     continue;
     //                 }
-    //
+    // 
     //                 if (!CanRemoveRoll(grid, x, y))
     //                 {
     //                     continue;
     //                 }
-    //
+    // 
     //                 removed++;
     //                 grid[x, y] = false;
     //                 changed    = true;
     //             }
     //         }
     //     } while (changed);
-    //
+    // 
     //     return removed;
     // }
-    //
+    // 
     // private static bool CanRemoveRoll(bool[,] grid, int x, int y)
     // {
     //     var surrounding    = 0;
     //     var nonSurrounding = 0;
-    //
+    // 
     //     var border1 = x == _sizeX - 1;
     //     var border2 = y == _sizeY - 1;
     //     var border3 = x == 0;
     //     var border4 = y == 0;
-    //
+    // 
     //     var boundX = border1
     //                      ? 1
     //                      : 2;
     //     var boundY = border2
     //                      ? 1
     //                      : 2;
-    //
+    // 
     //     if ((border1 || border3) && (border2 || border4))
     //     {
     //         return true;
     //     }
-    //
+    // 
     //     for (var xd = border3
     //                       ? 0
     //                       : -1;
@@ -192,7 +192,7 @@ public class Part2 : AoCPart
     //             }
     //         }
     //     }
-    //
+    // 
     //     return true;
     // }
 }
