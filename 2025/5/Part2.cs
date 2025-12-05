@@ -22,18 +22,14 @@ public class Part2 : AoCPart
             var start = long.Parse(split[0]);
             var until = long.Parse(split[1]);
 
-            while (freshIds.Any(x => x.Item1 <= start && x.Item2 >= start))
+            while (freshIds.TryGetFirst(x => x.Item1 <= start && x.Item2 >= start, out var range))
             {
-                var startId = freshIds.First(x => x.Item1 <= start && x.Item2 >= start)
-                                      .Item2;
-                start = startId + 1;
+                start = range.Item2 + 1;
             }
 
-            while (freshIds.Any(x => x.Item1 <= until && x.Item2 >= until))
+            while (freshIds.TryGetFirst(x => x.Item1 <= until && x.Item2 >= until, out var range))
             {
-                var untilId = freshIds.First(x => x.Item1 <= until && x.Item2 >= until)
-                                      .Item1;
-                until = untilId - 1;
+                until = range.Item1 - 1;
             }
 
             if (until < start)
@@ -41,9 +37,8 @@ public class Part2 : AoCPart
                 continue;
             }
 
-            while (freshIds.Any(x => x.Item1 >= start && x.Item2 <= until))
+            while (freshIds.TryGetFirst(x => x.Item1 >= start && x.Item2 <= until, out var skipped))
             {
-                var skipped = freshIds.First(x => x.Item1 >= start && x.Item2 <= until);
                 freshIds.Remove(skipped);
                 var sub = skipped.Item2 + 1 - skipped.Item1;
                 fresh -= sub;

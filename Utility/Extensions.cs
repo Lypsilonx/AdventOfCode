@@ -46,4 +46,39 @@ public static class Extensions
 
         return num;
     }
+    
+    public static bool TryGet<T>(this List<T>? list, int index, out T value)
+    {
+        if (list != null && index >= 0 && index < list.Count)
+        {
+            value = list[index];
+            return true;
+        }
+
+        value = default!;
+        return false;
+    }
+    
+    public static bool TryGet<T>(this List<T> list, Func<T, bool> filter, out List<T> values)
+    {
+        values = list.Where(filter).ToList();
+        return values.Count > 0;
+    }
+    
+    public static bool TryGetFirst<T>(this List<T> list, Func<T, bool> filter, out T? value)
+    {
+        foreach (var element in list)
+        {
+            if (!filter(element))
+            {
+                continue;
+            }
+
+            value = element;
+            return true;
+        }
+        
+        value = default;
+        return false;
+    }
 }
