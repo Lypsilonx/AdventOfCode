@@ -12,11 +12,7 @@ public static class Runner
     {
         get
         {
-            field ??= Environment.CurrentDirectory.Contains("/bin")
-                          ? Directory.GetParent(Environment.CurrentDirectory)
-                                     ?.Parent?.Parent?.FullName
-                            ?? string.Empty
-                          : Environment.CurrentDirectory;
+            field ??= Environment.CurrentDirectory.Split("/Advent of Code")[0] + "/Advent of Code";
             return field;
         }
     }
