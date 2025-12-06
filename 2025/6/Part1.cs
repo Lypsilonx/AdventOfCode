@@ -19,30 +19,25 @@ public class Part1 : AoCPart
             var x = 0;
             foreach (var num in oneSpaceLine.Split(" "))
             {
-                if (num == "")
+                switch (num)
                 {
-                    continue;
-                }
-
-                if (num == "+")
-                {
-                    result += columns[x]
-                        .Sum();
-                    x++;
-                    continue;
-                }
-
-                if (num == "*")
-                {
-                    result += columns[x]
-                        .Mult();
-                    x++;
-                    continue;
+                    case "":
+                        continue;
+                    case "+":
+                        result += columns[x]
+                            .Sum();
+                        x++;
+                        continue;
+                    case "*":
+                        result += columns[x]
+                            .Mult();
+                        x++;
+                        continue;
                 }
 
                 if (columns.Count < x + 1)
                 {
-                    columns.Add(new List<long>());
+                    columns.Add([]);
                 }
 
                 columns[x]

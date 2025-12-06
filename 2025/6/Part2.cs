@@ -18,7 +18,7 @@ public class Part2 : AoCPart
             {
                 if (table.Count < x + 1)
                 {
-                    table.Add(new List<char>());
+                    table.Add([]);
                 }
 
                 table[x]
@@ -29,30 +29,30 @@ public class Part2 : AoCPart
         table.Add([]);
 
         List<long> numbers = [];
-        var        op      = "";
+        var        op      = ' ';
         foreach (var column in table)
         {
             var colStr = column.Join("").Replace(" ", "");
 
-            if (colStr.EndsWith("*"))
+            if (colStr.EndsWith('*'))
             {
-                op     = "*";
+                op     = '*';
                 colStr = colStr[..^1];
             }
-            else if (colStr.EndsWith("+"))
+            else if (colStr.EndsWith('+'))
             {
-                op     = "+";
+                op     = '+';
                 colStr = colStr[..^1];
             }
 
             if (colStr == "")
             {
-                var value = op == "+"
+                var value = op == '+'
                                 ? numbers.Sum()
                                 : numbers.Mult();
 
                 result += value;
-                op     =  "";
+                op     =  ' ';
                 numbers.Clear();
                 continue;
             }
