@@ -4,8 +4,7 @@ namespace Advent_of_Code._2025._5;
 
 public class Part2 : AoCPart
 {
-    public override string TestInput    => "11-11\n11-13\n13-15\n11-11\n5-11\n10-11";
-    public override string TestSolution => "11";
+    public override List<(string, string)> Tests => [("11-11\n11-13\n13-15\n11-11\n5-11\n10-11", "11")];
 
     public override object Run()
     {

@@ -46,8 +46,10 @@ public static class Runner
 
                    public class Part1 : {{{nameof(AoCPart)}}}
                    {
-                       public override string TestInput    => "";
-                       public override string TestSolution => "";
+                       public override List<(string, string)> Tests => [
+                           ("",
+                            ""),
+                       ];
                        
                        public override object Run()
                        {
@@ -71,8 +73,10 @@ public static class Runner
 
                   public class Part2 : {{nameof(AoCPart)}}
                   {
-                      public override string TestInput    => "";
-                      public override string TestSolution => "";
+                      public override List<(string, string)> Tests => [
+                          ("",
+                           ""),
+                      ];
                       
                       public override object Run()
                       {
@@ -113,20 +117,36 @@ public static class Runner
 
         var partObject = (Activator.CreateInstance(type) as AoCPart)!;
 
-        if (partObject.TestInput != "")
+        if (partObject.Tests.Count != 0)
         {
-            AoCPart.Testing = true;
-            var testOutput = partObject.Run()
-                                       .ToString();
-            AoCPart.Testing = false;
-
-            if (testOutput != partObject.TestSolution)
+            for (var index = 0; index < partObject.Tests.Count; index++)
             {
-                Console.WriteLine($"Test failed. Got \"{testOutput}\", expected \"{partObject.TestSolution}\"");
-                return;
+                var test = partObject.Tests[index];
+                AoCPart.TestInput = test.Input;
+                var testOutput = partObject.Run()
+                                           .ToString();
+                AoCPart.TestInput = null;
+
+                if (testOutput != test.Solution)
+                {
+                    Console.WriteLine($"Test {index} failed. Got \"{testOutput}\", expected \"{test.Solution}\"");
+                    return;
+                }
+
+                if (partObject.Tests.Count > 1)
+                {
+                    Console.WriteLine($"Test {index} passed.");
+                }
+                else
+                {
+                    Console.WriteLine("Test passed.");
+                }
             }
 
-            Console.WriteLine("Test passed.");
+            if (partObject.Tests.Count > 1)
+            {
+                Console.WriteLine("All tests passed.");
+            }
         }
 
         var watch     = Stopwatch.StartNew();

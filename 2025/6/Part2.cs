@@ -4,8 +4,10 @@ namespace Advent_of_Code._2025._6;
 
 public class Part2 : AoCPart
 {
-    public override string TestInput    => "123 328  51 64 \n 45 64  387 23 \n  6 98  215 314\n*   +   *   +  ";
-    public override string TestSolution => "3263827";
+    public override List<(string, string)> Tests =>
+    [
+        ("123 328  51 64 \n 45 64  387 23 \n  6 98  215 314\n*   +   *   +  ", "3263827")
+    ];
 
     public override object Run()
     {
@@ -32,7 +34,8 @@ public class Part2 : AoCPart
         var        op      = ' ';
         foreach (var column in table)
         {
-            var colStr = column.Join("").Replace(" ", "");
+            var colStr = column.Join("")
+                               .Replace(" ", "");
 
             if (colStr.EndsWith('*'))
             {
