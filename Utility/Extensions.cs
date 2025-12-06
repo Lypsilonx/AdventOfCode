@@ -46,7 +46,7 @@ public static class Extensions
 
         return num;
     }
-    
+
     public static bool TryGet<T>(this List<T>? list, int index, out T value)
     {
         if (list != null && index >= 0 && index < list.Count)
@@ -58,13 +58,14 @@ public static class Extensions
         value = default!;
         return false;
     }
-    
+
     public static bool TryGet<T>(this List<T> list, Func<T, bool> filter, out List<T> values)
     {
-        values = list.Where(filter).ToList();
+        values = list.Where(filter)
+                     .ToList();
         return values.Count > 0;
     }
-    
+
     public static bool TryGetFirst<T>(this List<T> list, Func<T, bool> filter, out T? value)
     {
         foreach (var element in list)
@@ -77,8 +78,33 @@ public static class Extensions
             value = element;
             return true;
         }
-        
+
         value = default;
         return false;
+    }
+
+    public static int Mult(this List<int> list)
+    {
+        return list.Aggregate((a, i) => a * i);
+    }
+
+    public static long Mult(this List<long> list)
+    {
+        return list.Aggregate((a, i) => a * i);
+    }
+
+    public static float Mult(this List<float> list)
+    {
+        return list.Aggregate((a, i) => a * i);
+    }
+
+    public static string ReplaceRecursive(this string input, string pattern, string replace)
+    {
+        while (input.Contains(pattern))
+        {
+            input = input.Replace(pattern, replace);
+        }
+
+        return input;
     }
 }

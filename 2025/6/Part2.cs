@@ -9,9 +9,9 @@ public class Part2 : AoCPart
 
     public override object Run()
     {
-        long             result  = 0;
-        var              lines   = InputLines();
-        List<List<char>> table   = [];
+        long             result = 0;
+        var              lines  = InputLines();
+        List<List<char>> table  = [];
         foreach (var line in lines)
         {
             for (var x = 0; x < line.Length; x++)
@@ -21,10 +21,11 @@ public class Part2 : AoCPart
                     table.Add(new List<char>());
                 }
 
-                table[x].Add(line[x]);
+                table[x]
+                    .Add(line[x]);
             }
         }
-        
+
         table.Add(new List<char>());
 
         List<long> numbers = [];
@@ -32,34 +33,32 @@ public class Part2 : AoCPart
         foreach (var column in table)
         {
             var colStr = column.Join("");
-            
-            while (colStr.Contains(" "))
-            {
-                colStr = colStr.Replace(" ", "");
-            }
+
+            colStr = colStr.ReplaceRecursive(" ", "");
 
             if (colStr.EndsWith("*"))
             {
                 op     = "*";
                 colStr = colStr[..^1];
-            } else if (colStr.EndsWith("+"))
+            }
+            else if (colStr.EndsWith("+"))
             {
                 op     = "+";
                 colStr = colStr[..^1];
             }
-            
+
             if (colStr == "")
             {
                 var value = op == "+"
                                 ? numbers.Sum()
-                                : numbers.Aggregate((a, i) => a * i);
+                                : numbers.Mult();
 
                 result += value;
                 op     =  "";
                 numbers.Clear();
                 continue;
             }
-            
+
             numbers.Add(long.Parse(colStr));
         }
 

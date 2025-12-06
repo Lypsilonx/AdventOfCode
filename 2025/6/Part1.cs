@@ -6,18 +6,15 @@ public class Part1 : AoCPart
 {
     public override string TestInput    => "123 328  51 64 \n 45 64  387 23 \n  6 98  215 314\n*   +   *   +  ";
     public override string TestSolution => "4277556";
-    
+
     public override object Run()
     {
-        long result = 0;
+        long             result  = 0;
         List<List<long>> columns = [];
         foreach (var line in InputLines())
         {
             var oneSpaceLine = line;
-            while (oneSpaceLine.Contains("  "))
-            {
-                oneSpaceLine = oneSpaceLine.Replace("  ", " ");
-            }
+            oneSpaceLine = oneSpaceLine.ReplaceRecursive("  ", " ");
 
             var x = 0;
             foreach (var num in oneSpaceLine.Split(" "))
@@ -26,7 +23,7 @@ public class Part1 : AoCPart
                 {
                     continue;
                 }
-                
+
                 if (num == "+")
                 {
                     result += columns[x]
@@ -34,10 +31,11 @@ public class Part1 : AoCPart
                     x++;
                     continue;
                 }
-                
+
                 if (num == "*")
                 {
-                    result += columns[x].Aggregate((a, i) => a * i);
+                    result += columns[x]
+                        .Mult();
                     x++;
                     continue;
                 }
@@ -46,11 +44,13 @@ public class Part1 : AoCPart
                 {
                     columns.Add(new List<long>());
                 }
-                
-                columns[x].Add(long.Parse(num));
+
+                columns[x]
+                    .Add(long.Parse(num));
                 x++;
             }
         }
+
         return result;
     }
 }
