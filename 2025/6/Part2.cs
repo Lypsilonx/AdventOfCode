@@ -26,15 +26,13 @@ public class Part2 : AoCPart
             }
         }
 
-        table.Add(new List<char>());
+        table.Add([]);
 
         List<long> numbers = [];
         var        op      = "";
         foreach (var column in table)
         {
-            var colStr = column.Join("");
-
-            colStr = colStr.ReplaceRecursive(" ", "");
+            var colStr = column.Join("").Replace(" ", "");
 
             if (colStr.EndsWith("*"))
             {
