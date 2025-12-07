@@ -21,7 +21,7 @@ public class Part1 : AoCPart
             {
                 continue;
             }
-            
+
             if (beamPositions.Count == 0)
             {
                 beamPositions = [line.Value.IndexOf('S')];

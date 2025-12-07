@@ -35,7 +35,7 @@ public class Part2 : AoCPart
                     {
                         continue;
                     }
-                    
+
                     beamPositions.Remove(beam, out var amount);
 
                     beamPositions.ForceAdd(beam + 1, amount);

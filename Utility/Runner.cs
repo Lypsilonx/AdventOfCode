@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Advent_of_Code.Utility;
 
@@ -9,7 +10,7 @@ public static class Runner
 {
     [field: AllowNull]
     [field: MaybeNull]
-    public static string ProjectDirectory
+    private static string _projectDirectory
     {
         get
         {
@@ -22,51 +23,51 @@ public static class Runner
     {
         var filesCreated = false;
 
-        if (!Directory.Exists($"{ProjectDirectory}/{pYear}"))
+        if (!Directory.Exists($"{_projectDirectory}/{pYear}"))
         {
-            Directory.CreateDirectory($"{ProjectDirectory}/{pYear}");
+            Directory.CreateDirectory($"{_projectDirectory}/{pYear}");
             Console.WriteLine($"Creating directory for {pYear}");
             filesCreated = true;
         }
 
-        if (!Directory.Exists($"{ProjectDirectory}/{pYear}/{pDay}"))
+        if (!Directory.Exists($"{_projectDirectory}/{pYear}/{pDay}"))
         {
-            Directory.CreateDirectory($"{ProjectDirectory}/{pYear}/{pDay}");
+            Directory.CreateDirectory($"{_projectDirectory}/{pYear}/{pDay}");
             Console.WriteLine($"Creating directory for {pYear}/{pDay}");
             filesCreated = true;
         }
 
-        if (!File.Exists($"{ProjectDirectory}/{pYear}/{pDay}/Part1.cs"))
+        if (!File.Exists($"{_projectDirectory}/{pYear}/{pDay}/Part1.cs"))
         {
             File.WriteAllText(
-                $"{ProjectDirectory}/{pYear}/{pDay}/Part1.cs",
+                $"{_projectDirectory}/{pYear}/{pDay}/Part1.cs",
                 $$"""
-                   using Advent_of_Code.Utility;
+                  using Advent_of_Code.Utility;
 
-                   namespace Advent_of_Code._{{pYear}}._{{pDay}};
+                  namespace Advent_of_Code._{{pYear}}._{{pDay}};
 
-                   public class Part1 : {{nameof(AoCPart)}}
-                   {
-                       public override List<(string, string)> Tests => [
-                           ("",
-                            ""),
-                       ];
-                       
-                       public override object Run(string input)
-                       {
-                           return "";
-                       }
-                   }
-                   """
+                  public class Part1 : {{nameof(AoCPart)}}
+                  {
+                      public override List<(string, string)> Tests => [
+                          ("",
+                           ""),
+                      ];
+                      
+                      public override object Run(string input)
+                      {
+                          return "";
+                      }
+                  }
+                  """
             );
             Console.WriteLine($"Creating Part1 for {pYear}/{pDay}");
             filesCreated = true;
         }
 
-        if (!File.Exists($"{ProjectDirectory}/{pYear}/{pDay}/Part2.cs"))
+        if (!File.Exists($"{_projectDirectory}/{pYear}/{pDay}/Part2.cs"))
         {
             File.WriteAllText(
-                $"{ProjectDirectory}/{pYear}/{pDay}/Part2.cs",
+                $"{_projectDirectory}/{pYear}/{pDay}/Part2.cs",
                 $$"""
                   using Advent_of_Code.Utility;
 
@@ -92,10 +93,10 @@ public static class Runner
 
         return filesCreated;
     }
-    
+
     private static string Input(int pYear, int pDay)
     {
-        var filePath = $"{ProjectDirectory}/{pYear}/{pDay}/input.txt";
+        var filePath = $"{_projectDirectory}/{pYear}/{pDay}/input.txt";
 
         if (File.Exists(filePath))
         {
@@ -110,14 +111,14 @@ public static class Runner
         client.BaseAddress = baseAddress;
         cookieContainer.Add(
             baseAddress,
-            new Cookie("session", File.ReadAllText($"{ProjectDirectory}/Utility/token.txt"))
+            new Cookie("session", File.ReadAllText($"{_projectDirectory}/Utility/token.txt"))
         );
         var result = client.GetAsync($"{pYear}/day/{pDay}/input")
                            .Result;
         result.EnsureSuccessStatusCode();
 
         var text = result.Content.ReadAsStringAsync()
-                     .Result;
+                         .Result;
 
         File.WriteAllText(filePath, text);
 
@@ -133,7 +134,7 @@ public static class Runner
 
         if (pPart == 0)
         {
-            pPart = File.ReadAllText($"{ProjectDirectory}/{pYear}/{pDay}/Part2.cs")
+            pPart = File.ReadAllText($"{_projectDirectory}/{pYear}/{pDay}/Part2.cs")
                         .Contains("{\n        return \"\";\n    }")
                         ? 1
                         : 2;
@@ -188,7 +189,7 @@ public static class Runner
         var output = outputRaw.ToString();
         Console.WriteLine(output);
 
-        var solved = File.ReadAllLines($"{ProjectDirectory}/Utility/solved.txt");
+        var solved = File.ReadAllLines($"{_projectDirectory}/Utility/solved.txt");
         if (!pSubmit || string.IsNullOrEmpty(output) || solved.Contains($"{pYear}/{pDay}/{pPart}"))
         {
             return;
@@ -202,6 +203,43 @@ public static class Runner
             return;
         }
 
-        partObject.Submit(output);
+        Submit(pYear, pDay, pPart, output);
+    }
+
+    private static void Submit(int pYear, int pDay, int pPart, string answer)
+    {
+        var       baseAddress     = new Uri("https://adventofcode.com");
+        var       cookieContainer = new CookieContainer();
+        using var client          = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
+        client.BaseAddress = baseAddress;
+        cookieContainer.Add(
+            baseAddress,
+            new Cookie("session", File.ReadAllText($"{_projectDirectory}/Utility/token.txt"))
+        );
+        var formContent = new FormUrlEncodedContent(
+            new List<KeyValuePair<string, string>> { new("level", pPart.ToString()), new("answer", answer) }
+        );
+        var result = client.PostAsync($"{pYear}/day/{pDay}/answer", formContent)
+                           .Result;
+
+        result.EnsureSuccessStatusCode();
+
+        var htmlContent = result.Content.ReadAsStringAsync()
+                                .Result;
+        htmlContent = Regex.Replace(htmlContent, "<a \n?.*?>(.*?)</a\n?>",       "${1}", RegexOptions.Singleline);
+        htmlContent = Regex.Replace(htmlContent, "<span \n?.*?>(.*?)</span\n?>", "${1}", RegexOptions.Singleline);
+
+        var matches = Regex.Matches(htmlContent, "<article><p>(.*?)</p>", RegexOptions.Singleline);
+
+        var response = matches.First()
+                              .Groups[1]
+                              .Value.Replace("</p><p>", "\n");
+
+        if (response.Contains("That's the right answer") || response.Contains("complete"))
+        {
+            File.AppendAllLines($"{_projectDirectory}/Utility/solved.txt", [$"{pYear}/{pDay}/{pPart}"]);
+        }
+
+        Console.WriteLine(response);
     }
 }
