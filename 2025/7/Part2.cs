@@ -4,59 +4,44 @@ namespace Advent_of_Code._2025._7;
 
 public class Part2 : AoCPart
 {
-    public override List<(string, string)> Tests => [
+    public override List<(string, string)> Tests =>
+    [
         (".......S.......\n...............\n.......^.......\n...............\n......^.^......\n...............\n.....^.^.^.....\n...............\n....^.^...^....\n...............\n...^.^...^.^...\n...............\n..^...^.....^..\n...............\n.^.^.^.^.^...^.\n...............",
-         "40"),
+         "40")
     ];
-    
+
     public override object Run()
     {
-        var           lines         = InputLines();
         Dictionary<int, long> beamPositions = [];
-        long           splitTimes    = 1;
-        foreach (var line in lines)
+        long                  splitTimes    = 1;
+        foreach (var line in InputLines())
         {
             if (beamPositions.Count == 0)
             {
-                beamPositions[line.IndexOf("S")] = 1;
+                beamPositions[line.IndexOf('S')] = 1;
             }
             else
             {
-                for (int i = 0; i < line.Length; i++)
+                for (var i = 0; i < line.Length; i++)
                 {
                     var c = line[i];
-                    switch (c)
+
+                    if (c != '^' || !beamPositions.Remove(i, out var amount))
                     {
-                        case '.':
-                            continue;
-                        case '^':
-                            if (beamPositions.ContainsKey(i))
-                            {
-                                var amount = beamPositions[i];
-                                beamPositions.Remove(i);
-                                if (!beamPositions.ContainsKey(i + 1))
-                                {
-                                    beamPositions.Add(i + 1, amount);
-                                }
-                                else
-                                {
-                                    beamPositions[i + 1] += amount;
-                                }
-                                if (!beamPositions.ContainsKey(i - 1))
-                                {
-                                    beamPositions.Add(i - 1, amount);
-                                }
-                                else
-                                {
-                                    beamPositions[i - 1] += amount;
-                                }
-                                splitTimes += amount;
-                            }
-                            continue;
+                        continue;
                     }
+
+                    beamPositions[i + 1] = beamPositions.TryGetValue(i + 1, out var prevPlus)
+                                               ? prevPlus + amount
+                                               : amount;
+                    beamPositions[i - 1] = beamPositions.TryGetValue(i - 1, out var prevMinus)
+                                               ? prevMinus + amount
+                                               : amount;
+                    splitTimes += amount;
                 }
             }
         }
+
         return splitTimes;
     }
 }
