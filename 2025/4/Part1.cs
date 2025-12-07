@@ -11,10 +11,10 @@ public class Part1 : AoCPart
          "13")
     ];
 
-    public override object Run()
+    public override object Run(string input)
     {
         List<Vector2> grid  = [];
-        var           lines = InputLines();
+        var           lines = SplitInput(input);
         for (var y = 0; y < lines.Length; y++)
         {
             var line = lines[y];

@@ -6,11 +6,11 @@ public class Part1 : AoCPart
 {
     public override List<(string, string)> Tests => [("L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\nR14\nL82", "3")];
 
-    public override object Run()
+    public override object Run(string input)
     {
         var dial              = 50;
         var leftPointingCount = 0;
-        foreach (var line in InputLines())
+        foreach (var line in SplitInput(input))
         {
             var dir = line[..1];
             var num = int.Parse(line[1..]);

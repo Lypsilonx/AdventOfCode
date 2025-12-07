@@ -5,11 +5,11 @@ namespace Advent_of_Code._2021._2;
 
 public class Part1 : AoCPart
 {
-    public override object Run()
+    public override object Run(string input)
     {
         var position = Vector2.Zero;
 
-        foreach (var line in InputLines())
+        foreach (var line in SplitInput(input))
         {
             var split     = line.Split(" ");
             var direction = split[0];

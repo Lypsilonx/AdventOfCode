@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Reflection;
 
 namespace Advent_of_Code.Utility;
@@ -39,19 +40,19 @@ public static class Runner
         {
             File.WriteAllText(
                 $"{ProjectDirectory}/{pYear}/{pDay}/Part1.cs",
-                $$$"""
+                $$"""
                    using Advent_of_Code.Utility;
 
-                   namespace Advent_of_Code._{{{pYear}}}._{{{pDay}}};
+                   namespace Advent_of_Code._{{pYear}}._{{pDay}};
 
-                   public class Part1 : {{{nameof(AoCPart)}}}
+                   public class Part1 : {{nameof(AoCPart)}}
                    {
                        public override List<(string, string)> Tests => [
                            ("",
                             ""),
                        ];
                        
-                       public override object Run()
+                       public override object Run(string input)
                        {
                            return "";
                        }
@@ -78,7 +79,7 @@ public static class Runner
                            ""),
                       ];
                       
-                      public override object Run()
+                      public override object Run(string input)
                       {
                           return "";
                       }
@@ -90,6 +91,37 @@ public static class Runner
         }
 
         return filesCreated;
+    }
+    
+    private static string Input(int pYear, int pDay)
+    {
+        var filePath = $"{ProjectDirectory}/{pYear}/{pDay}/input.txt";
+
+        if (File.Exists(filePath))
+        {
+            var fileContents = File.ReadAllText(filePath);
+
+            return fileContents;
+        }
+
+        var       baseAddress     = new Uri("https://adventofcode.com");
+        var       cookieContainer = new CookieContainer();
+        using var client          = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
+        client.BaseAddress = baseAddress;
+        cookieContainer.Add(
+            baseAddress,
+            new Cookie("session", File.ReadAllText($"{ProjectDirectory}/Utility/token.txt"))
+        );
+        var result = client.GetAsync($"{pYear}/day/{pDay}/input")
+                           .Result;
+        result.EnsureSuccessStatusCode();
+
+        var text = result.Content.ReadAsStringAsync()
+                     .Result;
+
+        File.WriteAllText(filePath, text);
+
+        return text;
     }
 
     public static void Run(int pYear, int pDay, int pPart = 0, bool pSubmit = false)
@@ -122,10 +154,8 @@ public static class Runner
             for (var index = 0; index < partObject.Tests.Count; index++)
             {
                 var test = partObject.Tests[index];
-                AoCPart.TestInput = test.Input;
-                var testOutput = partObject.Run()
+                var testOutput = partObject.Run(test.Input)
                                            .ToString();
-                AoCPart.TestInput = null;
 
                 if (testOutput != test.Solution)
                 {
@@ -149,8 +179,9 @@ public static class Runner
             }
         }
 
+        var input     = Input(pYear, pDay);
         var watch     = Stopwatch.StartNew();
-        var outputRaw = partObject.Run();
+        var outputRaw = partObject.Run(input);
         watch.Stop();
         Console.WriteLine($"{pYear}/{pDay}/{pPart}: ({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)");
 

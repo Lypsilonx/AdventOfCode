@@ -9,10 +9,10 @@ public class Part2 : AoCPart
         ("123 328  51 64 \n 45 64  387 23 \n  6 98  215 314\n*   +   *   +  ", "3263827")
     ];
 
-    public override object Run()
+    public override object Run(string input)
     {
         long             result = 0;
-        var              lines  = InputLines();
+        var              lines  = SplitInput(input);
         List<List<char>> table  = [];
         foreach (var line in lines)
         {

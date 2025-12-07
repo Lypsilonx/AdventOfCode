@@ -6,11 +6,11 @@ public class Part2 : AoCPart
 {
     public override List<(string, string)> Tests => [("11-11\n11-13\n13-15\n11-11\n5-11\n10-11", "11")];
 
-    public override object Run()
+    public override object Run(string input)
     {
         long               fresh    = 0;
         List<(long, long)> freshIds = [];
-        foreach (var line in InputLines(false))
+        foreach (var line in SplitInput(input, false))
         {
             if (line == "")
             {

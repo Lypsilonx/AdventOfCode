@@ -5,50 +5,6 @@ namespace Advent_of_Code.Utility;
 
 public abstract class AoCPart
 {
-    public static string? TestInput;
-
-    protected string Input
-    {
-        get
-        {
-            string text;
-            if (TestInput != null)
-            {
-                text = TestInput;
-            }
-            else
-            {
-                var filePath = $"{Runner.ProjectDirectory}/{_year}/{_day}/input.txt";
-
-                if (File.Exists(filePath))
-                {
-                    var fileContents = File.ReadAllText(filePath);
-
-                    return fileContents;
-                }
-
-                var       baseAddress     = new Uri("https://adventofcode.com");
-                var       cookieContainer = new CookieContainer();
-                using var client          = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
-                client.BaseAddress = baseAddress;
-                cookieContainer.Add(
-                    baseAddress,
-                    new Cookie("session", File.ReadAllText($"{Runner.ProjectDirectory}/Utility/token.txt"))
-                );
-                var result = client.GetAsync($"{_year}/day/{_day}/input")
-                                   .Result;
-                result.EnsureSuccessStatusCode();
-
-                text = result.Content.ReadAsStringAsync()
-                             .Result;
-
-                File.WriteAllText(filePath, text);
-            }
-
-            return text;
-        }
-    }
-
     private int _year =>
         int.Parse(
             GetType()
@@ -70,9 +26,9 @@ public abstract class AoCPart
 
     public virtual List<(string Input, string Solution)> Tests => [];
 
-    protected string[] InputLines(bool removeEmpty = true)
+    protected string[] SplitInput(string input, bool removeEmpty = true)
     {
-        var lines = Input.Split("\n");
+        var lines = input.Split("\n");
         if (removeEmpty)
         {
             lines = lines.Where(l => l != "")
@@ -82,7 +38,7 @@ public abstract class AoCPart
         return lines;
     }
 
-    public abstract object Run();
+    public abstract object Run(string input);
 
     public void Submit(string answer)
     {

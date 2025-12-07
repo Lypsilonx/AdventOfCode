@@ -4,11 +4,11 @@ namespace Advent_of_Code._2021._1;
 
 public class Part2 : AoCPart
 {
-    public override object Run()
+    public override object Run(string input)
     {
         var prev         = float.MaxValue;
         var greaterCount = 0;
-        var lines        = InputLines();
+        var lines        = SplitInput(input);
         for (var index = 2; index < lines.Length; index++)
         {
             var val0 = int.Parse(lines[index - 2]);

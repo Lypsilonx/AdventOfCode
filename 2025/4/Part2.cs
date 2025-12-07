@@ -11,11 +11,11 @@ public class Part2 : AoCPart
          "43")
     ];
 
-    public override object Run()
+    public override object Run(string input)
     {
         List<Vector2>    grid  = [];
         HashSet<Vector2> hash  = [];
-        var              lines = InputLines();
+        var              lines = SplitInput(input);
         for (var y = 0; y < lines.Length; y++)
         {
             var line = lines[y];

@@ -6,12 +6,12 @@ public class Part1 : AoCPart
 {
     public override List<(string, string)> Tests => [("3-5\n10-14\n16-20\n12-18\n\n1\n5\n8\n11\n17\n32", "3")];
 
-    public override object Run()
+    public override object Run(string input)
     {
         var                fresh    = 0;
         var                ranges   = true;
         List<(long, long)> freshIds = [];
-        foreach (var line in InputLines(false))
+        foreach (var line in SplitInput(input, false))
         {
             if (line == "")
             {

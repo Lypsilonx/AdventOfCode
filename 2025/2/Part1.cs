@@ -10,10 +10,10 @@ public class Part1 : AoCPart
          "1227775554")
     ];
 
-    public override object Run()
+    public override object Run(string input)
     {
         List<long> invalidIds = [];
-        foreach (var idRange in Input.Split(","))
+        foreach (var idRange in input.Split(","))
         {
             var ids      = idRange.Split("-");
             var firstId  = long.Parse(ids[0]);

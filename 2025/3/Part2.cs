@@ -9,10 +9,10 @@ public class Part2 : AoCPart
         ("987654321111111\n811111111111119\n234234234234278\n818181911112111", "3121910778619")
     ];
 
-    public override object Run()
+    public override object Run(string input)
     {
         long joltageSum = 0;
-        foreach (var bank in InputLines())
+        foreach (var bank in SplitInput(input))
         {
             var batteries = bank.ToList()
                                 .Select(c => int.Parse(c.ToString()))

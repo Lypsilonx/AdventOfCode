@@ -10,11 +10,11 @@ public class Part2 : AoCPart
          "40")
     ];
 
-    public override object Run()
+    public override object Run(string input)
     {
         Dictionary<int, long> beamPositions = [];
         long                  splitTimes    = 1;
-        foreach (var line in InputLines()
+        foreach (var line in SplitInput(input)
                      .Enumerate())
         {
             if (line.Index % 2 == 1)
@@ -28,16 +28,18 @@ public class Part2 : AoCPart
             }
             else
             {
-                foreach (var c in line.Value.Enumerate()
-                                      .Where(x => x.Value == '^'))
+                var keys = new List<int>(beamPositions.Keys);
+                foreach (var beam in keys)
                 {
-                    if (!beamPositions.Remove(c.Index, out var amount))
+                    if (line.Value[beam] != '^')
                     {
                         continue;
                     }
+                    
+                    beamPositions.Remove(beam, out var amount);
 
-                    beamPositions.ForceAdd(c.Index + 1, amount);
-                    beamPositions.ForceAdd(c.Index - 1, amount);
+                    beamPositions.ForceAdd(beam + 1, amount);
+                    beamPositions.ForceAdd(beam - 1, amount);
                     splitTimes += amount;
                 }
             }

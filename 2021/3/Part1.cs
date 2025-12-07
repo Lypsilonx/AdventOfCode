@@ -4,9 +4,9 @@ namespace Advent_of_Code._2021._3;
 
 public class Part1 : AoCPart
 {
-    public override object Run()
+    public override object Run(string input)
     {
-        var inputLines = InputLines();
+        var inputLines = SplitInput(input);
         var bits       = new int[inputLines[0].Length];
 
         foreach (var line in inputLines)

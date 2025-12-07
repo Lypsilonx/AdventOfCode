@@ -5,12 +5,12 @@ namespace Advent_of_Code._2021._19;
 
 public class Part2 : AoCPart
 {
-    public override object Run()
+    public override object Run(string input)
     {
         List<Scanner> scanners = [];
 
         Scanner? scanner = null;
-        foreach (var line in InputLines())
+        foreach (var line in SplitInput(input))
         {
             if (line.StartsWith("---"))
             {

@@ -10,11 +10,11 @@ public class Part1 : AoCPart
          "21")
     ];
 
-    public override object Run()
+    public override object Run(string input)
     {
         List<int> beamPositions = [];
         var       splitTimes    = 0;
-        foreach (var line in InputLines()
+        foreach (var line in SplitInput(input)
                      .Enumerate())
         {
             if (line.Index % 2 == 1)
