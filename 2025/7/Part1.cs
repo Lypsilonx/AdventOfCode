@@ -14,26 +14,26 @@ public class Part1 : AoCPart
     {
         List<int> beamPositions = [];
         var       splitTimes    = 0;
-        foreach (var line in InputLines())
+        foreach (var line in InputLines()
+                     .Enumerate())
         {
             if (beamPositions.Count == 0)
             {
-                beamPositions = [line.IndexOf('S')];
+                beamPositions = [line.Value.IndexOf('S')];
             }
             else
             {
-                for (var i = 0; i < line.Length; i++)
+                foreach (var c in line.Value.Enumerate()
+                                      .Where(x => x.Value == '^'))
                 {
-                    var c = line[i];
-
-                    if (c != '^' || !beamPositions.Contains(i))
+                    if (!beamPositions.Contains(c.Index))
                     {
                         continue;
                     }
 
-                    beamPositions.Remove(i);
-                    beamPositions.Add(i - 1);
-                    beamPositions.Add(i + 1);
+                    beamPositions.Remove(c.Index);
+                    beamPositions.Add(c.Index - 1);
+                    beamPositions.Add(c.Index + 1);
                     beamPositions = beamPositions.Distinct()
                                                  .ToList();
                     splitTimes++;

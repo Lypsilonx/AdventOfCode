@@ -108,10 +108,10 @@ public static class Extensions
 
     public static IEnumerable<(T Value, int Index)> Enumerate<T>(this IEnumerable<T> list)
     {
-        var index = -1;
+        var index = 0;
         return list.Select(x =>
             {
-                var i = ++index;
+                var i = index++;
                 return (x, i);
             }
         );
