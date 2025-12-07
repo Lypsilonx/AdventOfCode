@@ -28,34 +28,34 @@ public class Part2 : AoCPart
 
     public override object Run(string input)
     {
-        Dictionary<int, long> beamPositions = [];
-        long                  splitTimes    = 1;
-        foreach (var line in SplitInput(input)
-                     .Enumerate())
+        var  lines         = SplitInput(input);
+        var  beamPositions = new long[lines[0].Length];
+        long splitTimes    = 1;
+        foreach (var line in lines.Enumerate())
         {
             if (line.Index % 2 == 1)
             {
                 continue;
             }
 
-            if (beamPositions.Count == 0)
+            if (line.Index == 0)
             {
                 beamPositions[line.Value.IndexOf('S')] = 1;
             }
             else
             {
-                var keys = new List<int>(beamPositions.Keys);
-                foreach (var beam in keys)
+                for (var i = 0; i < beamPositions.Length; i++)
                 {
-                    if (line.Value[beam] != '^')
+                    var amount = beamPositions[i];
+                    if (line.Value[i] != '^')
                     {
                         continue;
                     }
 
-                    beamPositions.Remove(beam, out var amount);
+                    beamPositions[i] = 0;
 
-                    beamPositions.ForceAdd(beam + 1, amount);
-                    beamPositions.ForceAdd(beam - 1, amount);
+                    beamPositions[i + 1] += amount;
+                    beamPositions[i - 1] += amount;
                     splitTimes += amount;
                 }
             }
