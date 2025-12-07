@@ -41,7 +41,7 @@ public static class Runner
         {
             File.WriteAllText(
                 $"{_projectDirectory}/{pYear}/{pDay}/Part1.cs",
-                $$"""
+                $$"""""""
                   using Advent_of_Code.Utility;
 
                   namespace Advent_of_Code._{{pYear}}._{{pDay}};
@@ -49,8 +49,9 @@ public static class Runner
                   public class Part1 : {{nameof(AoCPart)}}
                   {
                       public override List<(string, string)> Tests => [
-                          ("",
-                           ""),
+                          ("""
+                           input
+                           """, ""),
                       ];
                       
                       public override object Run(string input)
@@ -58,7 +59,7 @@ public static class Runner
                           return "";
                       }
                   }
-                  """
+                  """""""
             );
             Console.WriteLine($"Creating Part1 for {pYear}/{pDay}");
             filesCreated = true;
@@ -68,7 +69,7 @@ public static class Runner
         {
             File.WriteAllText(
                 $"{_projectDirectory}/{pYear}/{pDay}/Part2.cs",
-                $$"""
+                $$"""""""
                   using Advent_of_Code.Utility;
 
                   namespace Advent_of_Code._{{pYear}}._{{pDay}};
@@ -76,8 +77,9 @@ public static class Runner
                   public class Part2 : {{nameof(AoCPart)}}
                   {
                       public override List<(string, string)> Tests => [
-                          ("",
-                           ""),
+                          ("""
+                           input
+                           """, ""),
                       ];
                       
                       public override object Run(string input)
@@ -85,7 +87,7 @@ public static class Runner
                           return "";
                       }
                   }
-                  """
+                  """""""
             );
             Console.WriteLine($"Creating Part2 for {pYear}/{pDay}");
             filesCreated = true;
@@ -152,29 +154,27 @@ public static class Runner
 
         if (partObject.Tests.Count != 0)
         {
+            var multiTest = partObject.Tests.Count > 1;
             for (var index = 0; index < partObject.Tests.Count; index++)
             {
+                var indexString = multiTest
+                                      ? $" {index}"
+                                      : "";
                 var test = partObject.Tests[index];
                 var testOutput = partObject.Run(test.Input)
                                            .ToString();
 
                 if (testOutput != test.Solution)
                 {
-                    Console.WriteLine($"Test {index} failed. Got \"{testOutput}\", expected \"{test.Solution}\"");
+                    Console.WriteLine($"Test{indexString} failed.");
+                    Console.WriteLine($"Got \"{testOutput}\", expected \"{test.Solution}\".");
                     return;
                 }
 
-                if (partObject.Tests.Count > 1)
-                {
-                    Console.WriteLine($"Test {index} passed.");
-                }
-                else
-                {
-                    Console.WriteLine("Test passed.");
-                }
+                Console.WriteLine($"Test{indexString} passed.");
             }
 
-            if (partObject.Tests.Count > 1)
+            if (multiTest)
             {
                 Console.WriteLine("All tests passed.");
             }

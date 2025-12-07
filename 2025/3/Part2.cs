@@ -6,7 +6,12 @@ public class Part2 : AoCPart
 {
     public override List<(string, string)> Tests =>
     [
-        ("987654321111111\n811111111111119\n234234234234278\n818181911112111", "3121910778619")
+        ("""
+         987654321111111
+         811111111111119
+         234234234234278
+         818181911112111
+         """, "3121910778619")
     ];
 
     public override object Run(string input)
