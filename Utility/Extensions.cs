@@ -99,10 +99,20 @@ public static class Extensions
     }
 
     public static void ForceAdd<TKey, TNumber>(this Dictionary<TKey, TNumber> dictionary, TKey key, TNumber amount)
-        where TNumber : INumber<TNumber>
+        where TNumber : INumber<TNumber> where TKey : notnull
     {
         dictionary[key] = dictionary.TryGetValue(key, out var prev)
                               ? prev + amount
                               : amount;
+    }
+
+    public static IEnumerable<(T Value, int Index)> Enumerate<T>(this IEnumerable<T> list)
+    {
+        var index = -1;
+        return list.Select(x =>
+        {
+            var i = ++index;
+            return (x, i);
+        });
     }
 }

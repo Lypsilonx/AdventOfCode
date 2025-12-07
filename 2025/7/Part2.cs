@@ -14,25 +14,28 @@ public class Part2 : AoCPart
     {
         Dictionary<int, long> beamPositions = [];
         long                  splitTimes    = 1;
-        foreach (var line in InputLines())
+        foreach (var line in InputLines().Enumerate())
         {
+            if (line.Index % 2 == 1)
+            {
+                continue;
+            }
+            
             if (beamPositions.Count == 0)
             {
-                beamPositions[line.IndexOf('S')] = 1;
+                beamPositions[line.Value.IndexOf('S')] = 1;
             }
             else
             {
-                for (var i = 0; i < line.Length; i++)
+                foreach (var c in line.Value.Enumerate().Where(x => x.Value == '^'))
                 {
-                    var c = line[i];
-
-                    if (c != '^' || !beamPositions.Remove(i, out var amount))
+                    if (!beamPositions.Remove(c.Index, out var amount))
                     {
                         continue;
                     }
-
-                    beamPositions.ForceAdd(i + 1, amount);
-                    beamPositions.ForceAdd(i - 1, amount);
+                
+                    beamPositions.ForceAdd(c.Index + 1, amount);
+                    beamPositions.ForceAdd(c.Index - 1, amount);
                     splitTimes += amount;
                 }
             }
