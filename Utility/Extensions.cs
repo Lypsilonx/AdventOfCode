@@ -83,17 +83,7 @@ public static class Extensions
         return false;
     }
 
-    public static int Mult(this List<int> list)
-    {
-        return list.Aggregate((a, i) => a * i);
-    }
-
-    public static long Mult(this List<long> list)
-    {
-        return list.Aggregate((a, i) => a * i);
-    }
-
-    public static float Mult(this List<float> list)
+    public static T Mult<T>(this List<T> list) where T : INumber<T>
     {
         return list.Aggregate((a, i) => a * i);
     }
@@ -106,5 +96,13 @@ public static class Extensions
         }
 
         return input;
+    }
+
+    public static void ForceAdd<TKey, TNumber>(this Dictionary<TKey, TNumber> dictionary, TKey key, TNumber amount)
+        where TNumber : INumber<TNumber>
+    {
+        dictionary[key] = dictionary.TryGetValue(key, out var prev)
+                              ? prev + amount
+                              : amount;
     }
 }

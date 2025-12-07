@@ -31,12 +31,8 @@ public class Part2 : AoCPart
                         continue;
                     }
 
-                    beamPositions[i + 1] = beamPositions.TryGetValue(i + 1, out var prevPlus)
-                                               ? prevPlus + amount
-                                               : amount;
-                    beamPositions[i - 1] = beamPositions.TryGetValue(i - 1, out var prevMinus)
-                                               ? prevMinus + amount
-                                               : amount;
+                    beamPositions.ForceAdd(i + 1, amount);
+                    beamPositions.ForceAdd(i - 1, amount);
                     splitTimes += amount;
                 }
             }
