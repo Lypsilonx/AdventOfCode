@@ -127,6 +127,30 @@ public static class Runner
         return text;
     }
 
+    public static void RunAll()
+    {
+        var years = Directory.GetDirectories($"{_projectDirectory}")
+                               .Select(path => path.Split("/").Last())
+                               .Where(dir => dir.StartsWith('2'))
+                               .Select(int.Parse).ToList();
+        years.Sort();
+        
+        foreach (var year in years)
+        {
+            var days = Directory.GetDirectories($"{_projectDirectory}/{year}")
+                     .Select(path => path.Split("/").Last())
+                     .Select(int.Parse);
+            
+            foreach (var day in days)
+            {
+                Run(year, day, 1);
+                Console.WriteLine();
+                Run(year, day, 2);
+                Console.WriteLine();
+            }
+        }
+    }
+
     public static void Run(int pYear, int pDay, int pPart = 0, bool pSubmit = false)
     {
         if (CreateFilesForToday(pYear, pDay))
@@ -141,6 +165,8 @@ public static class Runner
                         ? 1
                         : 2;
         }
+        
+        Console.WriteLine($"{pYear}/{pDay}/{pPart}:");
 
         var type = Assembly.Load("Advent of Code, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
                            .GetType($"Advent_of_Code._{pYear}._{pDay}.Part{pPart}");
@@ -184,13 +210,18 @@ public static class Runner
         var watch     = Stopwatch.StartNew();
         var outputRaw = partObject.Run(input);
         watch.Stop();
-        Console.WriteLine($"{pYear}/{pDay}/{pPart}: ({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)");
 
         var output = outputRaw.ToString();
+        if (string.IsNullOrEmpty(output))
+        {
+            Console.WriteLine("Not solved.");
+            return;
+        }
         Console.WriteLine(output);
+        Console.WriteLine($"({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)");
 
         var solved = File.ReadAllLines($"{_projectDirectory}/Utility/solved.txt");
-        if (!pSubmit || string.IsNullOrEmpty(output) || solved.Contains($"{pYear}/{pDay}/{pPart}"))
+        if (!pSubmit || solved.Contains($"{pYear}/{pDay}/{pPart}"))
         {
             return;
         }
