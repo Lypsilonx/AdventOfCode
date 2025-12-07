@@ -17,6 +17,11 @@ public class Part1 : AoCPart
         foreach (var line in InputLines()
                      .Enumerate())
         {
+            if (line.Index % 2 == 1)
+            {
+                continue;
+            }
+            
             if (beamPositions.Count == 0)
             {
                 beamPositions = [line.Value.IndexOf('S')];
