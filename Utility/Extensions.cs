@@ -110,9 +110,10 @@ public static class Extensions
     {
         var index = -1;
         return list.Select(x =>
-        {
-            var i = ++index;
-            return (x, i);
-        });
+            {
+                var i = ++index;
+                return (x, i);
+            }
+        );
     }
 }
