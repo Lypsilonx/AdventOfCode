@@ -32,73 +32,79 @@ public class Part2 : AoCPart
     
     public override object Run(string input)
     {
-        var           lines     = SplitInput(input);
-        var           toConnect = lines.Length == 20 ? 10 : 1000;
-        List<Vector3> breakers  = [];
-        foreach (var line in lines)
+        var           lines    = SplitInput(input);
+        var           length   = lines.Length;
+        List<Vector3> breakers = [];
+        for (var index = 0; index < length; index++)
         {
-            var split = line.Split(",").Select(int.Parse).ToList();
-            var vec   = new Vector3(split[0], split[1], split[2]);
+            var line = lines[index];
+            var split = line.Split(",")
+                            .Select(int.Parse)
+                            .ToList();
+            var vec = new Vector3(split[0], split[1], split[2]);
             breakers.Add(vec);
         }
 
-        float[,]                       distances = new float[breakers.Count, breakers.Count];
+        var                       distances = new float[length, length];
 
-        for (int x = 0; x < breakers.Count; x++)
+        for (var x = 0; x < length; x++)
         {
-            for (int y = 0; y < breakers.Count; y++)
+            for (var y = 0; y < length; y++)
             {
-                if (x == y)
-                {
-                    distances[x, y] = float.MaxValue;
-                    continue;
-                }
                 distances[x, y] = Vector3.Distance(breakers[x], breakers[y]);
             }
         }
         
-        List<List<int>> circuits = breakers.Enumerate().Select(x => new List<int>([x.Index])).ToList();
-        
-        (float distance, int indexA, int indexB) FindClosest()
+        var circuits = new int[length];
+        for (var i = 0; i < length; i++)
         {
-            (float distance, int indexA, int indexB) closestDistance = (float.MaxValue, 0, 0);
-            for (int i = 0; i < distances.Length; i++)
-            {
-                var x        = i % breakers.Count;
-                var y        = i / breakers.Count;
-                var distance = distances[x, y];
-                
-                if (distance < closestDistance.distance)
-                {
-                    closestDistance = (distance, x, y);
-                }
-            }
-            
-            return closestDistance;
+            circuits[i] = i;
         }
 
         (float distance, int indexA, int indexB) lastConnection = (0, 0, 0);
 
-        while (circuits.Count > 1)
+        for (var circuitCount = length; circuitCount > 1; circuitCount--)
         {
-            (float distance, int indexA, int indexB) closestDistance = FindClosest();
+            var closestDistance = FindClosest();
 
-            var circuitA = circuits.First(c => c.Contains(closestDistance.indexA));
-            var circuitB = circuits.First(c => c.Contains(closestDistance.indexB));
-            distances[closestDistance.indexA, closestDistance.indexB] = float.MaxValue;
-            distances[closestDistance.indexB, closestDistance.indexA] = float.MaxValue;
-
-            if (circuitA == circuitB)
-            {
-                continue;
-            }
+            var circuitA = circuits[closestDistance.indexA];
+            var circuitB = circuits[closestDistance.indexB];
 
             lastConnection = closestDistance;
-            
-            circuits.Remove(circuitB);
-            circuitA.AddRange(circuitB);
+
+            for (var j = 0; j < length; j++)
+            {
+                if (circuits[j] == circuitA)
+                {
+                    circuits[j] = circuitB;
+                }
+            }
         }
 
         return (long) breakers[lastConnection.indexA].X * (long) breakers[lastConnection.indexB].X;
+
+        (float distance, int indexA, int indexB) FindClosest()
+        {
+            (float distance, int indexA, int indexB) closestDistance = (float.MaxValue, 0, 0);
+            for (var x = 0; x < length; x++)
+            {
+                for (var y = 0; y < length; y++)
+                {
+                    var distance = distances[x, y];
+
+                    if (circuits[x] == circuits[y])
+                    {
+                        continue;
+                    }
+
+                    if (distance < closestDistance.distance)
+                    {
+                        closestDistance = (distance, x, y);
+                    }
+                }
+            }
+
+            return closestDistance;
+        }
     }
 }

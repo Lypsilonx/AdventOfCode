@@ -42,11 +42,11 @@ public class Part1 : AoCPart
             breakers.Add(vec);
         }
 
-        float[,]                       distances = new float[breakers.Count, breakers.Count];
+        var                       distances = new float[breakers.Count, breakers.Count];
 
-        for (int x = 0; x < breakers.Count; x++)
+        for (var x = 0; x < breakers.Count; x++)
         {
-            for (int y = 0; y < breakers.Count; y++)
+            for (var y = 0; y < breakers.Count; y++)
             {
                 if (x == y)
                 {
@@ -57,12 +57,12 @@ public class Part1 : AoCPart
             }
         }
         
-        List<List<int>> circuits = breakers.Enumerate().Select(x => new List<int>([x.Index])).ToList();
+        var circuits = breakers.Enumerate().Select(x => new List<int>([x.Index])).ToList();
         
         (float distance, int indexA, int indexB) FindClosest()
         {
             (float distance, int indexA, int indexB) closestDistance = (float.MaxValue, 0, 0);
-            for (int i = 0; i < distances.Length; i++)
+            for (var i = 0; i < distances.Length; i++)
             {
                 var x        = i % breakers.Count;
                 var y        = i / breakers.Count;
@@ -77,9 +77,9 @@ public class Part1 : AoCPart
             return closestDistance;
         }
 
-        for (int i = 0; i < toConnect; i++)
+        for (var i = 0; i < toConnect; i++)
         {
-            (float distance, int indexA, int indexB) closestDistance = FindClosest();
+            var closestDistance = FindClosest();
 
             var circuitA = circuits.First(c => c.Contains(closestDistance.indexA));
             var circuitB = circuits.First(c => c.Contains(closestDistance.indexB));
