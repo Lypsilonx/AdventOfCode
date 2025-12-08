@@ -1,4 +1,3 @@
-using System.Numerics;
 using Advent_of_Code.Utility;
 
 namespace Advent_of_Code._2025._8;
@@ -34,7 +33,7 @@ public class Part2 : AoCPart
     public override object Run(string input)
     {
         var                            lines    = SplitInput(input);
-        ushort                         length   = (ushort) lines.Length;
+        var                            length   = (ushort) lines.Length;
         List<(uint X, uint Y, uint Z)> breakers = [];
         for (ushort index = 0; index < length; index++)
         {
@@ -44,7 +43,7 @@ public class Part2 : AoCPart
                             .ToList();
             breakers.Add((split[0], split[1], split[2]));
         }
-        
+
         SortedSet<KeyValuePair<uint, (ushort, ushort)>> distances = new(new KeyValueComparer<uint, (ushort, ushort)>());
 
         for (ushort x = 0; x < length; x++)
@@ -55,6 +54,7 @@ public class Part2 : AoCPart
                 {
                     continue;
                 }
+
                 distances.Add(new KeyValuePair<uint, (ushort, ushort)>(LazyDistance(breakers[x], breakers[y]), (x, y)));
             }
         }
@@ -86,7 +86,7 @@ public class Part2 : AoCPart
         }
 
         return breakers[lastConnection.indexA].X * breakers[lastConnection.indexB].X;
-        
+
         uint LazyDistance((uint X, uint Y, uint Z) self, (uint X, uint Y, uint Z) other)
         {
             var dX = self.X - other.X;
@@ -108,15 +108,15 @@ public class Part2 : AoCPart
             return closestDistance;
         }
     }
-        
-    private class KeyValueComparer<K, V> : IComparer<KeyValuePair<K, V>>
-        where K : IComparable
-        where V : IComparable
+
+    private class KeyValueComparer<K, V> : IComparer<KeyValuePair<K, V>> where K : IComparable where V : IComparable
     {
         public int Compare(KeyValuePair<K, V> x, KeyValuePair<K, V> y)
         {
             var res = x.Key.CompareTo(y.Key);
-            return res == 0 ? x.Value.CompareTo(y.Value) : res;
+            return res == 0
+                       ? x.Value.CompareTo(y.Value)
+                       : res;
         }
     }
 }
