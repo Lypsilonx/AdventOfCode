@@ -44,7 +44,7 @@ public class Part2 : AoCPart
             breakers.Add((split[0], split[1], split[2]));
         }
 
-        SortedSet<KeyValuePair<uint, (ushort, ushort)>> distances = new(new KeyValueComparer<uint, (ushort, ushort)>());
+        SortedSet<(uint Key, (ushort indexA, ushort indexB) Value)> distances = new(new CustomComparer());
 
         for (ushort x = 0; x < length; x++)
         {
@@ -55,9 +55,11 @@ public class Part2 : AoCPart
                     continue;
                 }
 
-                distances.Add(new KeyValuePair<uint, (ushort, ushort)>(LazyDistance(breakers[x], breakers[y]), (x, y)));
+                distances.Add((LazyDistance(breakers[x], breakers[y]), (x, y)));
             }
         }
+
+        var enumerator = distances.GetEnumerator();
 
         var circuits = new ushort[length];
         for (ushort i = 0; i < length; i++)
@@ -97,26 +99,20 @@ public class Part2 : AoCPart
 
         (ushort indexA, ushort indexB) FindClosest()
         {
-            (ushort indexA, ushort indexB) closestDistance;
-            do
+            while (circuits[enumerator.Current.Value.indexA] == circuits[enumerator.Current.Value.indexB])
             {
-                var min = distances.Min;
-                closestDistance = min.Value;
-                distances.Remove(min);
-            } while (circuits[closestDistance.indexA] == circuits[closestDistance.indexB]);
+                enumerator.MoveNext();
+            }
 
-            return closestDistance;
+            return enumerator.Current.Value;
         }
     }
 
-    private class KeyValueComparer<K, V> : IComparer<KeyValuePair<K, V>> where K : IComparable where V : IComparable
+    private class CustomComparer : IComparer<(uint Key, (ushort, ushort) Value)>
     {
-        public int Compare(KeyValuePair<K, V> x, KeyValuePair<K, V> y)
+        public int Compare((uint Key, (ushort, ushort) Value) x, (uint Key, (ushort, ushort) Value) y)
         {
-            var res = x.Key.CompareTo(y.Key);
-            return res == 0
-                       ? x.Value.CompareTo(y.Value)
-                       : res;
+            return (int) (x.Key - y.Key);
         }
     }
 }
