@@ -5,7 +5,8 @@ namespace Advent_of_Code._2025._8;
 
 public class Part1 : AoCPart
 {
-    public override List<(string, string)> Tests => [
+    public override List<(string, string)> Tests =>
+    [
         ("""
          162,817,812
          57,618,57
@@ -27,22 +28,26 @@ public class Part1 : AoCPart
          862,61,35
          984,92,344
          425,690,689
-         """, "40"),
+         """, "40")
     ];
-    
+
     public override object Run(string input)
     {
-        var           lines     = SplitInput(input);
-        var           toConnect = lines.Length == 20 ? 10 : 1000;
-        List<Vector3> breakers  = [];
+        var lines = SplitInput(input);
+        var toConnect = lines.Length == 20
+                            ? 10
+                            : 1000;
+        List<Vector3> breakers = [];
         foreach (var line in lines)
         {
-            var split = line.Split(",").Select(int.Parse).ToList();
-            var vec   = new Vector3(split[0], split[1], split[2]);
+            var split = line.Split(",")
+                            .Select(int.Parse)
+                            .ToList();
+            var vec = new Vector3(split[0], split[1], split[2]);
             breakers.Add(vec);
         }
 
-        var                       distances = new float[breakers.Count, breakers.Count];
+        var distances = new float[breakers.Count, breakers.Count];
 
         for (var x = 0; x < breakers.Count; x++)
         {
@@ -53,12 +58,15 @@ public class Part1 : AoCPart
                     distances[x, y] = float.MaxValue;
                     continue;
                 }
+
                 distances[x, y] = Vector3.Distance(breakers[x], breakers[y]);
             }
         }
-        
-        var circuits = breakers.Enumerate().Select(x => new List<int>([x.Index])).ToList();
-        
+
+        var circuits = breakers.Enumerate()
+                               .Select(x => new List<int>([x.Index]))
+                               .ToList();
+
         (float distance, int indexA, int indexB) FindClosest()
         {
             (float distance, int indexA, int indexB) closestDistance = (float.MaxValue, 0, 0);
@@ -67,13 +75,13 @@ public class Part1 : AoCPart
                 var x        = i % breakers.Count;
                 var y        = i / breakers.Count;
                 var distance = distances[x, y];
-                
+
                 if (distance < closestDistance.distance)
                 {
                     closestDistance = (distance, x, y);
                 }
             }
-            
+
             return closestDistance;
         }
 
@@ -89,8 +97,8 @@ public class Part1 : AoCPart
             if (circuitA == circuitB)
             {
                 continue;
-            } 
-            
+            }
+
             circuits.Remove(circuitB);
             circuitA.AddRange(circuitB);
         }

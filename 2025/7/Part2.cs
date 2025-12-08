@@ -56,7 +56,7 @@ public class Part2 : AoCPart
 
                     beamPositions[i + 1] += amount;
                     beamPositions[i - 1] += amount;
-                    splitTimes += amount;
+                    splitTimes           += amount;
                 }
             }
         }

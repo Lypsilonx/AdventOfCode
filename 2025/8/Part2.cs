@@ -5,7 +5,8 @@ namespace Advent_of_Code._2025._8;
 
 public class Part2 : AoCPart
 {
-    public override List<(string, string)> Tests => [
+    public override List<(string, string)> Tests =>
+    [
         ("""
          162,817,812
          57,618,57
@@ -27,9 +28,9 @@ public class Part2 : AoCPart
          862,61,35
          984,92,344
          425,690,689
-         """, "25272"),
+         """, "25272")
     ];
-    
+
     public override object Run(string input)
     {
         var           lines    = SplitInput(input);
@@ -45,7 +46,7 @@ public class Part2 : AoCPart
             breakers.Add(vec);
         }
 
-        var                       distances = new float[length, length];
+        var distances = new float[length, length];
 
         for (var x = 0; x < length; x++)
         {
@@ -54,7 +55,7 @@ public class Part2 : AoCPart
                 distances[x, y] = Vector3.Distance(breakers[x], breakers[y]);
             }
         }
-        
+
         var circuits = new int[length];
         for (var i = 0; i < length; i++)
         {

@@ -130,17 +130,22 @@ public static class Runner
     public static void RunAll()
     {
         var years = Directory.GetDirectories($"{_projectDirectory}")
-                               .Select(path => path.Split("/").Last())
-                               .Where(dir => dir.StartsWith('2'))
-                               .Select(int.Parse).ToList();
+                             .Select(path => path.Split("/")
+                                                 .Last()
+                             )
+                             .Where(dir => dir.StartsWith('2'))
+                             .Select(int.Parse)
+                             .ToList();
         years.Sort();
-        
+
         foreach (var year in years)
         {
             var days = Directory.GetDirectories($"{_projectDirectory}/{year}")
-                     .Select(path => path.Split("/").Last())
-                     .Select(int.Parse);
-            
+                                .Select(path => path.Split("/")
+                                                    .Last()
+                                )
+                                .Select(int.Parse);
+
             foreach (var day in days)
             {
                 Run(year, day, 1);
@@ -165,7 +170,7 @@ public static class Runner
                         ? 1
                         : 2;
         }
-        
+
         Console.WriteLine($"{pYear}/{pDay}/{pPart}:");
 
         var type = Assembly.Load("Advent of Code, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
@@ -217,6 +222,7 @@ public static class Runner
             Console.WriteLine("Not solved.");
             return;
         }
+
         Console.WriteLine(output);
         Console.WriteLine($"({(float) watch.ElapsedTicks / Stopwatch.Frequency * 1000}ms)");
 
