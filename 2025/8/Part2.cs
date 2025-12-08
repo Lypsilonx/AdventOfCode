@@ -33,36 +33,39 @@ public class Part2 : AoCPart
 
     public override object Run(string input)
     {
-        var           lines    = SplitInput(input);
-        var           length   = lines.Length;
-        List<Vector3> breakers = [];
-        for (var index = 0; index < length; index++)
+        var                            lines    = SplitInput(input);
+        ushort                         length   = (ushort) lines.Length;
+        List<(uint X, uint Y, uint Z)> breakers = [];
+        for (ushort index = 0; index < length; index++)
         {
             var line = lines[index];
             var split = line.Split(",")
-                            .Select(int.Parse)
+                            .Select(uint.Parse)
                             .ToList();
-            var vec = new Vector3(split[0], split[1], split[2]);
-            breakers.Add(vec);
+            breakers.Add((split[0], split[1], split[2]));
         }
+        
+        SortedSet<KeyValuePair<uint, (ushort, ushort)>> distances = new(new KeyValueComparer<uint, (ushort, ushort)>());
 
-        var distances = new float[length, length];
-
-        for (var x = 0; x < length; x++)
+        for (ushort x = 0; x < length; x++)
         {
-            for (var y = 0; y < length; y++)
+            for (ushort y = 0; y < length; y++)
             {
-                distances[x, y] = Vector3.Distance(breakers[x], breakers[y]);
+                if (x >= y)
+                {
+                    continue;
+                }
+                distances.Add(new KeyValuePair<uint, (ushort, ushort)>(LazyDistance(breakers[x], breakers[y]), (x, y)));
             }
         }
 
-        var circuits = new int[length];
-        for (var i = 0; i < length; i++)
+        var circuits = new ushort[length];
+        for (ushort i = 0; i < length; i++)
         {
             circuits[i] = i;
         }
 
-        (float distance, int indexA, int indexB) lastConnection = (0, 0, 0);
+        (ushort indexA, ushort indexB) lastConnection = (0, 0);
 
         for (var circuitCount = length; circuitCount > 1; circuitCount--)
         {
@@ -73,7 +76,7 @@ public class Part2 : AoCPart
 
             lastConnection = closestDistance;
 
-            for (var j = 0; j < length; j++)
+            for (ushort j = 0; j < length; j++)
             {
                 if (circuits[j] == circuitA)
                 {
@@ -82,30 +85,38 @@ public class Part2 : AoCPart
             }
         }
 
-        return (long) breakers[lastConnection.indexA].X * (long) breakers[lastConnection.indexB].X;
-
-        (float distance, int indexA, int indexB) FindClosest()
+        return breakers[lastConnection.indexA].X * breakers[lastConnection.indexB].X;
+        
+        uint LazyDistance((uint X, uint Y, uint Z) self, (uint X, uint Y, uint Z) other)
         {
-            (float distance, int indexA, int indexB) closestDistance = (float.MaxValue, 0, 0);
-            for (var x = 0; x < length; x++)
+            var dX = self.X - other.X;
+            var dY = self.Y - other.Y;
+            var dZ = self.Z - other.Z;
+            return dX * dX + dY * dY + dZ * dZ;
+        }
+
+        (ushort indexA, ushort indexB) FindClosest()
+        {
+            (ushort indexA, ushort indexB) closestDistance;
+            do
             {
-                for (var y = 0; y < length; y++)
-                {
-                    var distance = distances[x, y];
-
-                    if (circuits[x] == circuits[y])
-                    {
-                        continue;
-                    }
-
-                    if (distance < closestDistance.distance)
-                    {
-                        closestDistance = (distance, x, y);
-                    }
-                }
-            }
+                var min = distances.Min;
+                closestDistance = min.Value;
+                distances.Remove(min);
+            } while (circuits[closestDistance.indexA] == circuits[closestDistance.indexB]);
 
             return closestDistance;
+        }
+    }
+        
+    private class KeyValueComparer<K, V> : IComparer<KeyValuePair<K, V>>
+        where K : IComparable
+        where V : IComparable
+    {
+        public int Compare(KeyValuePair<K, V> x, KeyValuePair<K, V> y)
+        {
+            var res = x.Key.CompareTo(y.Key);
+            return res == 0 ? x.Value.CompareTo(y.Value) : res;
         }
     }
 }
