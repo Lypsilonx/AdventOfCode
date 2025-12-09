@@ -5,7 +5,8 @@ namespace Advent_of_Code._2025._9;
 
 public class Part2 : AoCPart
 {
-    public override List<(string, string)> Tests => [
+    public override List<(string, string)> Tests =>
+    [
         ("""
          7,1
          11,1
@@ -15,9 +16,9 @@ public class Part2 : AoCPart
          2,5
          2,3
          7,3
-         """, "24"),
+         """, "24")
     ];
-    
+
     public override object Run(string input)
     {
         List<Vector2> tiles = [];
@@ -27,52 +28,56 @@ public class Part2 : AoCPart
             tiles.Add(new Vector2(int.Parse(split[0]), int.Parse(split[1])));
         }
 
-        int    maxX   = (int) tiles.Max(v => v.X) + 2;
-        int    minX   = (int) tiles.Min(v => v.X);
-        int    maxY   = (int) tiles.Max(v => v.Y) + 2;
-        bool[] active = new bool[maxY];
-        bool[][] activeTiles = new bool[maxX][];
-        
+        var maxX        = (int) tiles.Max(v => v.X) + 2;
+        var minX        = (int) tiles.Min(v => v.X);
+        var maxY        = (int) tiles.Max(v => v.Y) + 2;
+        var active      = new bool[maxY];
+        var activeTiles = new bool[maxX][];
+
         List<int> lastXTiles = [];
-        for (int x = minX; x < maxX; x++)
+        for (var x = minX; x < maxX; x++)
         {
             while (lastXTiles.Count > 0)
             {
                 var start = lastXTiles[0];
                 var end   = lastXTiles[1];
-                
-                lastXTiles = lastXTiles.Skip(2).ToList();
-        
+
+                lastXTiles = lastXTiles.Skip(2)
+                                       .ToList();
+
                 if (active[start - 1])
                 {
                     start++;
                 }
-                
+
                 if (active[end + 1])
                 {
                     end--;
                 }
-                
-                for (int y = start; y < end + 1; y++)
+
+                for (var y = start; y < end + 1; y++)
                 {
                     active[y] = false;
                 }
             }
-            
-            var xTiles = tiles.Where(t => t.X == x).OrderBy(t => t.Y).ToList();
-        
+
+            var xTiles = tiles.Where(t => t.X == x)
+                              .OrderBy(t => t.Y)
+                              .ToList();
+
             while (xTiles.Count > 0)
             {
                 var start = (int) xTiles[0].Y;
-                var end = (int) xTiles[1].Y;
-        
-                xTiles = xTiles.Skip(2).ToList();
-        
-                var filling     = !active[start + 1];
-        
+                var end   = (int) xTiles[1].Y;
+
+                xTiles = xTiles.Skip(2)
+                               .ToList();
+
+                var filling = !active[start + 1];
+
                 if (filling)
                 {
-                    for (int y = start; y < end + 1; y++)
+                    for (var y = start; y < end + 1; y++)
                     {
                         active[y] = true;
                     }
@@ -83,10 +88,12 @@ public class Part2 : AoCPart
                     lastXTiles.Add(end);
                 }
             }
+
             // Console.WriteLine(active.Select(x => x ? "#" : ".").ToList().Join(""));
-            activeTiles[x] = active.Select(x => x).ToArray();
+            activeTiles[x] = active.Select(x => x)
+                                   .ToArray();
         }
-        
+
         long maxArea = 0;
         foreach (var tileA in tiles)
         {
@@ -96,22 +103,22 @@ public class Part2 : AoCPart
                 {
                     continue;
                 }
-                
-                long x    = (long) Math.Abs(tileA.X - tileB.X) + 1;
-                long y    = (long) Math.Abs(tileA.Y - tileB.Y) + 1;
-                long area = x * y;
+
+                var x    = (long) Math.Abs(tileA.X - tileB.X) + 1;
+                var y    = (long) Math.Abs(tileA.Y - tileB.Y) + 1;
+                var area = x * y;
                 if (area > maxArea)
                 {
                     if (!AllActive(tileA, tileB))
                     {
                         continue;
                     }
-                    
+
                     maxArea = area;
                 }
             }
         }
-        
+
         return maxArea;
 
         bool InSquare(Vector2 a, Vector2 b, Vector2 point)
@@ -130,9 +137,9 @@ public class Part2 : AoCPart
             var yMin = (int) Math.Min(a.Y, b.Y);
             var yMax = (int) Math.Max(a.Y, b.Y);
 
-            for (int xI = xMin; xI < xMax + 1; xI++)
+            for (var xI = xMin; xI < xMax + 1; xI++)
             {
-                for (int yI = yMin; yI < yMax + 1; yI++)
+                for (var yI = yMin; yI < yMax + 1; yI++)
                 {
                     if (!activeTiles[xI][yI])
                     {

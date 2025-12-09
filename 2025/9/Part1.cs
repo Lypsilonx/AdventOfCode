@@ -5,7 +5,8 @@ namespace Advent_of_Code._2025._9;
 
 public class Part1 : AoCPart
 {
-    public override List<(string, string)> Tests => [
+    public override List<(string, string)> Tests =>
+    [
         ("""
          7,1
          11,1
@@ -15,9 +16,9 @@ public class Part1 : AoCPart
          2,5
          2,3
          7,3
-         """, "50"),
+         """, "50")
     ];
-    
+
     public override object Run(string input)
     {
         List<Vector2> tiles = [];
@@ -32,16 +33,16 @@ public class Part1 : AoCPart
         {
             foreach (var tileB in tiles)
             {
-                long x    = (long) Math.Abs(tileA.X - tileB.X) + 1;
-                long y    = (long) Math.Abs(tileA.Y - tileB.Y) + 1;
-                long area = x * y;
+                var x    = (long) Math.Abs(tileA.X - tileB.X) + 1;
+                var y    = (long) Math.Abs(tileA.Y - tileB.Y) + 1;
+                var area = x * y;
                 if (area > maxArea)
                 {
                     maxArea = area;
                 }
             }
         }
-        
+
         return maxArea;
     }
 }
