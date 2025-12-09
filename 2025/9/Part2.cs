@@ -27,7 +27,7 @@ public class Part2 : AoCPart
             var split = line.Split(",");
             var x     = uint.Parse(split[0]);
             sxList.Add(x);
-            var y     = uint.Parse(split[1]);
+            var y = uint.Parse(split[1]);
             syList.Add(y);
         }
 
@@ -82,7 +82,10 @@ public class Part2 : AoCPart
             }
         }
 
+        var prefixLayout = Calculate2DPrefixSum(layout, (ushort) xList.Count, (ushort) yList.Count);
+
         uint maxArea = 0;
+        // List<(ushort X, ushort Y)> marked  = [];
         foreach (var xMax in tiles.Keys)
         {
             foreach (var xMin in tiles.Keys)
@@ -112,6 +115,21 @@ public class Part2 : AoCPart
             }
         }
 
+        // for (ushort x = 0; x < xList.Count; x++)
+        // {
+        //     for (ushort y = 0; y < yList.Count; y++)
+        //     {
+        //         Console.Write(
+        //             // marked.Contains((x, y)) ? "X" :
+        //             layout[x, y]
+        //                 ? "#"
+        //                 : "."
+        //         );
+        //     }
+        // 
+        //     Console.WriteLine();
+        // }
+
         return maxArea;
 
         bool AllActive(ushort xMin, ushort xMax, ushort yMin, ushort yMax)
@@ -122,18 +140,43 @@ public class Part2 : AoCPart
                 return false;
             }
 
-            for (var x = xMin + 1; x < xMax; x++)
+            return prefixLayout[xMax - 1, yMax - 1]
+                   + prefixLayout[xMin, yMin]
+                   - prefixLayout[xMin, yMax - 1]
+                   - prefixLayout[xMax       - 1, yMin]
+                   == 0;
+        }
+
+        static ushort[,] Calculate2DPrefixSum(bool[,] boolMap, ushort lenX, ushort lenY)
+        {
+            var outMap = new ushort[lenX, lenY];
+            for (ushort x = 0; x < lenX; x++)
             {
-                for (var y = yMin + 1; y < yMax; y++)
+                for (ushort y = 0; y < lenY; y++)
                 {
-                    if (layout[x, y])
+                    var sum = (ushort) (boolMap[x, y]
+                                            ? 1
+                                            : 0);
+                    if (x != 0)
                     {
-                        return false;
+                        sum += outMap[x - 1, y];
                     }
+
+                    if (y != 0)
+                    {
+                        sum += outMap[x, y - 1];
+                    }
+
+                    if (x != 0 && y != 0)
+                    {
+                        sum -= outMap[x - 1, y - 1];
+                    }
+
+                    outMap[x, y] = sum;
                 }
             }
 
-            return true;
+            return outMap;
         }
     }
 }
