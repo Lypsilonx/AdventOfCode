@@ -21,134 +21,93 @@ public class Part2 : AoCPart
 
     public override object Run(string input)
     {
-        List<Vector2> tiles = [];
+        Dictionary<uint, List<uint>> tiles = [];
+        uint maxX = 0;
         foreach (var line in SplitInput(input))
         {
             var split = line.Split(",");
-            tiles.Add(new Vector2(int.Parse(split[0]), int.Parse(split[1])));
-        }
-
-        var maxX        = (int) tiles.Max(v => v.X) + 2;
-        var minX        = (int) tiles.Min(v => v.X);
-        var maxY        = (int) tiles.Max(v => v.Y) + 2;
-        var active      = new bool[maxY];
-        var activeTiles = new bool[maxX][];
-
-        List<int> lastXTiles = [];
-        for (var x = minX; x < maxX; x++)
-        {
-            while (lastXTiles.Count > 0)
+            var x     = uint.Parse(split[0]);
+            var y     = uint.Parse(split[1]);
+            if (tiles.ContainsKey(x))
             {
-                var start = lastXTiles[0];
-                var end   = lastXTiles[1];
-
-                lastXTiles = lastXTiles.Skip(2)
-                                       .ToList();
-
-                if (active[start - 1])
-                {
-                    start++;
-                }
-
-                if (active[end + 1])
-                {
-                    end--;
-                }
-
-                for (var y = start; y < end + 1; y++)
-                {
-                    active[y] = false;
-                }
+                tiles[x].Add(y);
+            }
+            else
+            {
+                tiles[x] = [y];
             }
 
-            var xTiles = tiles.Where(t => t.X == x)
-                              .OrderBy(t => t.Y)
-                              .ToList();
-
-            while (xTiles.Count > 0)
+            if (x > maxX)
             {
-                var start = (int) xTiles[0].Y;
-                var end   = (int) xTiles[1].Y;
+                maxX = x;
+            }
+        }
+        
+        var    activeTiles = new (uint X, uint Y)[maxX + 1];
+        uint start       = 0;
+        uint end         = 0;
+        foreach (var x in tiles.Keys.OrderBy(x => x))
+        {
+            var xTiles = tiles[x].OrderBy(t => t)
+                                 .ToList();
 
-                xTiles = xTiles.Skip(2)
-                               .ToList();
-
-                var filling = !active[start + 1];
-
-                if (filling)
+            if (xTiles.Count > 0)
+            {
+                if (start == xTiles[0])
                 {
-                    for (var y = start; y < end + 1; y++)
-                    {
-                        active[y] = true;
-                    }
+                    start = xTiles.Last();
+                } else if (start == 0 || start == xTiles.Last())
+                {
+                    start = xTiles[0];
                 }
-                else
+                if (end == 0 || end == xTiles[0])
                 {
-                    lastXTiles.Add(start);
-                    lastXTiles.Add(end);
+                    end = xTiles.Last();
+                } else if (end == xTiles.Last())
+                {
+                    end = xTiles[0];
                 }
             }
 
             // Console.WriteLine(active.Select(x => x ? "#" : ".").ToList().Join(""));
-            activeTiles[x] = active.Select(x => x)
-                                   .ToArray();
+            activeTiles[x] = (start, end);
         }
 
         long maxArea = 0;
-        foreach (var tileA in tiles)
+        foreach (var tileAx in tiles.Keys)
         {
-            foreach (var tileB in tiles)
+            foreach (var tileAy in tiles[tileAx])
             {
-                if (tiles.Any(t => InSquare(tileA, tileB, t)))
+                foreach (var tileBx in tiles.Keys)
                 {
-                    continue;
-                }
-
-                var x    = (long) Math.Abs(tileA.X - tileB.X) + 1;
-                var y    = (long) Math.Abs(tileA.Y - tileB.Y) + 1;
-                var area = x * y;
-                if (area > maxArea)
-                {
-                    if (!AllActive(tileA, tileB))
+                    foreach (var tileBy in tiles[tileBx])
                     {
-                        continue;
-                    }
+                        var xMin = Math.Min(tileAx, tileBx);
+                        var xMax = Math.Max(tileAx, tileBx);
+                        var yMin = Math.Min(tileAy, tileBy);
+                        var yMax = Math.Max(tileAy, tileBy);
+                        var x    = xMax - xMin + 1;
+                        var y    = yMax - yMin + 1;
+                        var area = x * y;
+                        if (area <= maxArea || !AllActive(xMin, xMax, yMin, yMax))
+                        {
+                            continue;
+                        }
 
-                    maxArea = area;
+                        maxArea = area;
+                    }
                 }
             }
         }
 
         return maxArea;
 
-        bool InSquare(Vector2 a, Vector2 b, Vector2 point)
+        bool AllActive(uint xMin, uint xMax, uint yMin, uint yMax)
         {
-            var xMin = Math.Min(a.X, b.X);
-            var xMax = Math.Max(a.X, b.X);
-            var yMin = Math.Min(a.Y, b.Y);
-            var yMax = Math.Max(a.Y, b.Y);
-            return point.X > xMin && point.X < xMax && point.Y > yMin && point.Y < yMax;
-        }
-
-        bool AllActive(Vector2 a, Vector2 b)
-        {
-            var xMin = (int) Math.Min(a.X, b.X);
-            var xMax = (int) Math.Max(a.X, b.X);
-            var yMin = (int) Math.Min(a.Y, b.Y);
-            var yMax = (int) Math.Max(a.Y, b.Y);
-
-            for (var xI = xMin; xI < xMax + 1; xI++)
-            {
-                for (var yI = yMin; yI < yMax + 1; yI++)
-                {
-                    if (!activeTiles[xI][yI])
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+            return activeTiles[xMax].X    <= yMin
+                   && activeTiles[xMin].X <= yMin
+                   && activeTiles[xMin].Y >= yMax
+                   && activeTiles[xMax].Y >= yMax;
         }
     }
 }
