@@ -20,78 +20,86 @@ public class Part2 : AoCPart
 
     public override object Run(string input)
     {
-        Dictionary<uint, List<uint>> tiles = [];
-        uint                         maxX  = 0;
+        SortedSet<uint> sxList = [];
+        SortedSet<uint> syList = [];
         foreach (var line in SplitInput(input))
         {
             var split = line.Split(",");
             var x     = uint.Parse(split[0]);
+            sxList.Add(x);
             var y     = uint.Parse(split[1]);
-            if (tiles.ContainsKey(x))
+            syList.Add(y);
+        }
+
+        var yList = syList.ToList();
+        var xList = sxList.ToList();
+
+        var                              layout       = new bool[xList.Count, yList.Count];
+        ushort                           lastX        = 0;
+        ushort                           lastY        = 0;
+        HashSet<(ushort, ushort)>        xConnections = [];
+        HashSet<(ushort, ushort)>        yConnections = [];
+        Dictionary<ushort, List<ushort>> tiles        = [];
+        foreach (var line in SplitInput(input))
+        {
+            var split = line.Split(",");
+            var x     = (ushort) xList.IndexOf(uint.Parse(split[0]));
+            var y     = (ushort) yList.IndexOf(uint.Parse(split[1]));
+            if (x == lastX)
             {
-                tiles[x]
-                    .Add(y);
+                var min = Math.Min(y, lastY);
+                var max = Math.Max(y, lastY);
+                for (var i = (ushort) (min + 1); i < max; i++)
+                {
+                    layout[x, i] = true;
+                }
+
+                yConnections.Add((min, max));
             }
-            else
+            else if (y == lastY)
+            {
+                var min = Math.Min(x, lastX);
+                var max = Math.Max(x, lastX);
+                for (var i = (ushort) (min + 1); i < max; i++)
+                {
+                    layout[i, y] = true;
+                }
+
+                xConnections.Add((min, max));
+            }
+
+            lastX = x;
+            lastY = y;
+
+            layout[x, y] = true;
+            if (!tiles.TryGetValue(x, out var value))
             {
                 tiles[x] = [y];
             }
-
-            if (x > maxX)
+            else
             {
-                maxX = x;
+                value.Add(y);
             }
         }
 
-        var  activeTiles = new (uint X, uint Y)[maxX + 1];
-        uint start       = 0;
-        uint end         = 0;
-        foreach (var x in tiles.Keys.OrderBy(x => x))
+        uint maxArea = 0;
+        foreach (var xMax in tiles.Keys)
         {
-            var xTiles = tiles[x]
-                         .OrderBy(t => t)
-                         .ToList();
-
-            if (xTiles.Count > 0)
+            foreach (var xMin in tiles.Keys)
             {
-                if (start == xTiles[0])
+                if (xMax <= xMin)
                 {
-                    start = xTiles.Last();
-                }
-                else if (start == 0 || start == xTiles.Last())
-                {
-                    start = xTiles[0];
+                    continue;
                 }
 
-                if (end == 0 || end == xTiles[0])
+                foreach (var tileAy in tiles[xMax])
                 {
-                    end = xTiles.Last();
-                }
-                else if (end == xTiles.Last())
-                {
-                    end = xTiles[0];
-                }
-            }
-
-            // Console.WriteLine(active.Select(x => x ? "#" : ".").ToList().Join(""));
-            activeTiles[x] = (start, end);
-        }
-
-        long maxArea = 0;
-        foreach (var tileAx in tiles.Keys)
-        {
-            foreach (var tileAy in tiles[tileAx])
-            {
-                foreach (var tileBx in tiles.Keys)
-                {
-                    foreach (var tileBy in tiles[tileBx])
+                    foreach (var tileBy in tiles[xMin])
                     {
-                        var xMin = Math.Min(tileAx, tileBx);
-                        var xMax = Math.Max(tileAx, tileBx);
                         var yMin = Math.Min(tileAy, tileBy);
                         var yMax = Math.Max(tileAy, tileBy);
-                        var x    = xMax - xMin + 1;
-                        var y    = yMax - yMin + 1;
+                        var x    = xList[xMax] - xList[xMin] + 1;
+                        var y    = yList[yMax] - yList[yMin] + 1;
                         var area = x * y;
                         if (area <= maxArea || !AllActive(xMin, xMax, yMin, yMax))
                         {
@@ -106,12 +114,26 @@ public class Part2 : AoCPart
 
         return maxArea;
 
-        bool AllActive(uint xMin, uint xMax, uint yMin, uint yMax)
+        bool AllActive(ushort xMin, ushort xMax, ushort yMin, ushort yMax)
         {
-            return activeTiles[xMax].X    <= yMin
-                   && activeTiles[xMin].X <= yMin
-                   && activeTiles[xMin].Y >= yMax
-                   && activeTiles[xMax].Y >= yMax;
+            if ((xMin + 1 == xMax || yMin + 1 == yMax)
+                && !(xConnections.Contains((xMin, xMax)) && yConnections.Contains((yMin, yMax))))
+            {
+                return false;
+            }
+
+            for (var x = xMin + 1; x < xMax; x++)
+            {
+                for (var y = yMin + 1; y < yMax; y++)
+                {
+                    if (layout[x, y])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }
