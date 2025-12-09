@@ -1,4 +1,3 @@
-using System.Numerics;
 using Advent_of_Code.Utility;
 
 namespace Advent_of_Code._2025._9;
@@ -22,7 +21,7 @@ public class Part2 : AoCPart
     public override object Run(string input)
     {
         Dictionary<uint, List<uint>> tiles = [];
-        uint maxX = 0;
+        uint                         maxX  = 0;
         foreach (var line in SplitInput(input))
         {
             var split = line.Split(",");
@@ -30,7 +29,8 @@ public class Part2 : AoCPart
             var y     = uint.Parse(split[1]);
             if (tiles.ContainsKey(x))
             {
-                tiles[x].Add(y);
+                tiles[x]
+                    .Add(y);
             }
             else
             {
@@ -42,28 +42,32 @@ public class Part2 : AoCPart
                 maxX = x;
             }
         }
-        
-        var    activeTiles = new (uint X, uint Y)[maxX + 1];
+
+        var  activeTiles = new (uint X, uint Y)[maxX + 1];
         uint start       = 0;
         uint end         = 0;
         foreach (var x in tiles.Keys.OrderBy(x => x))
         {
-            var xTiles = tiles[x].OrderBy(t => t)
-                                 .ToList();
+            var xTiles = tiles[x]
+                         .OrderBy(t => t)
+                         .ToList();
 
             if (xTiles.Count > 0)
             {
                 if (start == xTiles[0])
                 {
                     start = xTiles.Last();
-                } else if (start == 0 || start == xTiles.Last())
+                }
+                else if (start == 0 || start == xTiles.Last())
                 {
                     start = xTiles[0];
                 }
+
                 if (end == 0 || end == xTiles[0])
                 {
                     end = xTiles.Last();
-                } else if (end == xTiles.Last())
+                }
+                else if (end == xTiles.Last())
                 {
                     end = xTiles[0];
                 }
